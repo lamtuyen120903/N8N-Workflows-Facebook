@@ -38,7 +38,6 @@ Luồng hoàn chỉnh xử lý tin nhắn Messenger:
 - Nhận webhook từ Facebook
 - Lưu vào Supabase database (`messenger_api`)
 - Xử lý tự động với AI
-<img width="467" height="411" alt="Screenshot 2026-04-23 at 13 52 32" src="https://github.com/user-attachments/assets/0e150a0f-5afa-4c86-9442-8723f8b09e23" />
 <img width="851" height="311" alt="Screenshot 2026-04-23 at 13 53 34" src="https://github.com/user-attachments/assets/6a55e72a-e865-4603-9680-57ad47cbfe95" />
 
 ### 3. Messenger - SubFlow - Người Thật & AI - Page Test
@@ -48,6 +47,7 @@ SubFlow xử lý hội thoại giữa người thật và AI:
 - Quản lý conversation với Redis
 - Memory PostgreSQL cho LangChain
 - Phân loại tin nhắn (người thật / bot)
+<img width="796" height="322" alt="Screenshot 2026-04-23 at 13 56 49" src="https://github.com/user-attachments/assets/395f6b12-9d1f-45f4-bf59-41142af7af50" />
 
 ### 4. Comment - SubFlow - Page Test
 **File:** `Facebook - Comment - SubFlow - Page Test.json`
@@ -72,6 +72,8 @@ Lấy thông tin bài viết từ Facebook Page:
 Tự động lưu bài viết vào Supabase Vector Store:
 - Lưu vào bảng `documents`
 - Hỗ trợ semantic search với embedding
+<img width="470" height="221" alt="Screenshot 2026-04-23 at 13 59 18" src="https://github.com/user-attachments/assets/ff76f277-3f01-42da-85f0-6268ffc5714f" />
+
 
 ### 7. Post - Reaction - SubFlow - Page Test
 **File:** `Facebook - Post - Reaction - SubFlow - Page Test.json`
@@ -79,11 +81,13 @@ Tự động lưu bài viết vào Supabase Vector Store:
 SubFlow xử lý reaction/post engagement:
 - Gửi tin nhắn tự động khi có tương tác
 - Redirect sang group Zalo: https://zalo.me/g/ujerqq444
+<img width="519" height="191" alt="Screenshot 2026-04-23 at 13 59 09" src="https://github.com/user-attachments/assets/4bdeed81-91dd-43b2-afd3-520f162dc953" />
 
 ### 8. Lấy link hình ảnh
 **File:** `Facebook - Lấy link hình ảnh.json`
 
 Trích xuất URL hình ảnh từ bài viết Facebook.
+<img width="294" height="117" alt="Screenshot 2026-04-23 at 13 53 26" src="https://github.com/user-attachments/assets/15572c75-fc1f-4960-80f2-a257198147df" />
 
 ### 9. Tự Động Lấy PageAccessToken - Page Test
 **File:** `Facebook - Tự Động Lấy PageAccessToken - Page Test.json`
