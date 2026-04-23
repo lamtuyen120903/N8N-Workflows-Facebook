@@ -1,0 +1,837 @@
+{
+  "name": "Facebook - Messenger - SubFlow - Người Thật & AI - Page Test",
+  "nodes": [
+    {
+      "parameters": {
+        "tableId": "messenger_api",
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": "Sender ID",
+              "fieldValue": "={{ $('Code in JavaScript2').first().json.normalized.format }}"
+            },
+            {
+              "fieldId": "Recipient ID",
+              "fieldValue": "={{ $('When Executed by Another Workflow').item.json.id_trang }}"
+            },
+            {
+              "fieldId": "Message ID",
+              "fieldValue": "={{ $('When Executed by Another Workflow').item.json.messenger[0].message.mid }}"
+            },
+            {
+              "fieldId": "Message Text",
+              "fieldValue": "={{ $('Redis Message Aggregator').item.json.originalMessages.map(m => m.content).join(',\\n') }}"
+            },
+            {
+              "fieldId": "status",
+              "fieldValue": "Done"
+            },
+            {
+              "fieldId": "Timestamp",
+              "fieldValue": "={{ $('When Executed by Another Workflow').first().json.messenger[0].timestamp.toDateTime('ms').format('yyyy-MM-dd') }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        32,
+        400
+      ],
+      "id": "8c40de2b-4b91-4cb2-bf46-0bd607d35a29",
+      "name": "Create a row",
+      "executeOnce": false,
+      "credentials": {
+        "supabaseApi": {
+          "id": "pTrcgCR6InvhD4Sg",
+          "name": "otimo-messenger"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $('Redis Message Aggregator').item.json.originalMessages.map(m => m.content).join(',\\n') }}",
+        "options": {
+          "systemMessage": "=## Vai trò\nBạn là trợ lý ảo **Cẩm Nang Gối Lò**, chuyên hỗ trợ lịch sự, tử tế các câu hỏi về làm bánh của fanpage *Cẩm Nang Gối Lò*.\n\n## Công cụ bắt buộc\n- **LUÔN LUÔN** dùng tool Supabase tra cứu dữ liệu mới nhất từ fanpage.\n- **CẤM** tự suy diễn kiến thức không có trong Supabase.\n\n## Quy định trả lời\n1. **Nhân xưng**: LUÔN dùng **\"Cẩm Nang Gối Lò\"** hoặc **\"mình\"**.\n2. **Chào hỏi**:\n   - Lần đầu nhắn: BẮT BUỘC \"Chào bạn! Cẩm Nang Gối Lò đây.\"\n   - Các tin sau: Không chào lại.\n3. **Văn phong**:\n   - Ngắn gọn, tự nhiên, lịch sự, tử tế.\n   - Dưới 1000 ký tự.\n   - **KHÔNG dùng icon, sticker**.\n   - **KHÔNG hỏi lại** hoặc thêm câu kết mở như “Nếu cần hỏi thêm...”."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        256,
+        400
+      ],
+      "id": "3ef42292-5f08-4f30-b2ce-b63ec2ae1326",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $('Code in JavaScript2').first().json.normalized.format }}",
+        "contextWindowLength": 30
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryPostgresChat",
+      "typeVersion": 1.3,
+      "position": [
+        320,
+        624
+      ],
+      "id": "1acbd54f-9deb-4c15-9a34-ef9dd7170e3e",
+      "name": "Postgres Chat Memory",
+      "credentials": {
+        "postgres": {
+          "id": "JFwnCaqW9l509av2",
+          "name": "Postgres Chat Memory - Messenger"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const body ={\n  \"recipient\":{\n    \"id\":`${$('Edit Fields').first().json['sender_id']}`\n},\n  \"message\": {\n    \"text\":`${$('AI Agent').first().json['output']}`\n}}\nreturn { data: JSON.stringify(body) }"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        864,
+        400
+      ],
+      "id": "ce960f04-e6d3-4364-9345-8bff55ac76b3",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "76582ab0-d495-482d-be32-753eb34b9208",
+              "name": "sender_id",
+              "value": "={{ $('When Executed by Another Workflow').first().json.messenger[0].sender.id }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        640,
+        400
+      ],
+      "id": "bdd529bb-34bd-43d9-9b1a-05133acb2562",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "inputSource": "passthrough"
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -1568,
+        192
+      ],
+      "id": "aaae98c6-ad10-4147-aee7-1b8e4445aad5",
+      "name": "When Executed by Another Workflow"
+    },
+    {
+      "parameters": {
+        "mode": "retrieve-as-tool",
+        "toolDescription": "=Lấy dữ liệu để trả lời khách hàn. Chỉ lấyy các dữ liệu có trong đây.",
+        "tableName": {
+          "__rl": true,
+          "value": "documents",
+          "mode": "list",
+          "cachedResultName": "documents"
+        },
+        "topK": 10,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStoreSupabase",
+      "typeVersion": 1.3,
+      "position": [
+        448,
+        624
+      ],
+      "id": "b328cc25-f7e7-4c5a-85ad-e470648b9a2a",
+      "name": "Supabase",
+      "credentials": {
+        "supabaseApi": {
+          "id": "pTrcgCR6InvhD4Sg",
+          "name": "otimo-messenger"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Lấy tất cả các item từ input\nconst items = $input.all();\nconst results = [];\n\nfor (const item of items) {\n  const data = item.json;\n\n  // Lấy sender và recipient từ chính item hiện tại\n  const senderId = $('When Executed by Another Workflow').first().json.messenger[0].sender.id;\n  const recipientId = $('When Executed by Another Workflow').first().json.messenger[0].recipient.id;\n\n  if (!senderId || !recipientId) {\n    throw new Error(\"Thiếu sender.id hoặc recipient.id trong dữ liệu\");\n  }\n\n  // Hàm kiểm tra ID có phải là Page không (Page ID thường < 16 ký tự)\n  const isPageId = (id) => String(id).length < 16;\n\n  let pageId, userId;\n\n  if (isPageId(senderId)) {\n    // Trang gửi tin → người nhận\n    pageId = senderId;\n    userId = recipientId;\n  } else {\n    // Người gửi tin → trang nhận\n    pageId = recipientId;\n    userId = senderId;\n  }\n\n  // Trả về dữ liệu đã được chuẩn hóa\n  results.push({\n    json: {\n      ...data,\n      normalized: {\n        pageId,\n        userId,\n        format: `${pageId}_${userId}`\n      }\n    }\n  });\n}\n\nreturn results;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1344,
+        192
+      ],
+      "id": "458be7ca-9191-4d70-ba8d-d9c8c074a590",
+      "name": "Code in JavaScript2"
+    },
+    {
+      "parameters": {
+        "key": "=CHAT-SESSIONS-{{ $('Code in JavaScript2').first().json.normalized.format }}",
+        "messageContent": "={{ $('When Executed by Another Workflow').first().json.messenger[0].message.text }}"
+      },
+      "type": "n8n-nodes-redis-message-aggregator.redisMessageAggregator",
+      "typeVersion": 1,
+      "position": [
+        -1120,
+        192
+      ],
+      "id": "f96223ac-d5c9-47a7-8dc9-a3c721f0f9df",
+      "name": "Redis Message Aggregator",
+      "alwaysOutputData": true,
+      "credentials": {
+        "redisApi": {
+          "id": "UGCw5OiCCXppy1m6",
+          "name": "Redis account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n  \"intent\": \"<tóm tắt yêu cầu chính của khách>\",\n  \"tone\": \"<tích_cực | trung_lập | tiêu_cực | khẩn_cấp>\",\n  \"level\": \"<AI | Human>\"\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        -304,
+        432
+      ],
+      "id": "d229c367-f043-4307-8cef-ec8d778226ca",
+      "name": "Structured Output Parser"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "c8c1c13f-7a7c-4ad4-ad2c-a5e25f159467",
+                    "leftValue": "={{ $('AI phân tích ngữ cảnh').first().json.output.level }}",
+                    "rightValue": "Human",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Human"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $('AI phân tích ngữ cảnh').first().json.output.level }}",
+                    "rightValue": "AI",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "d7824c31-ac60-4529-ac3c-cdbde9ba1d13"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "AI"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.3,
+      "position": [
+        -192,
+        208
+      ],
+      "id": "c297fe32-0f8a-4784-8678-979886ab15f6",
+      "name": "Switch1"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=User hỏi:\"{{ $('Redis Message Aggregator').first().json.originalMessages.map(m => m.content).join(',\\n') }}\"",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "=Bạn là hệ thống AI phân tích tin nhắn khách hàng và quyết định xem câu trả lời nên được AI xử lý tự động hay cần chuyển cho nhân viên thật.\n\nHướng dẫn:\n\n1. **Hiểu ý định (intent)**: Tóm tắt ngắn gọn yêu cầu hoặc vấn đề chính của khách hàng.\n2. **Nhận diện cảm xúc (tone)**: Xác định tin nhắn có tông tích cực, trung lập, tiêu cực hay khẩn cấp.\n3. **Quyết định người trả lời (level)**:\n   - **AI**: Lựa chọn mặc định. Dùng khi AI có thể trả lời chính xác và an toàn.\n   - **Human**: Dùng khi:\n       - Khách đang phàn nàn, bực bội hoặc tức giận.  \n       - Tin nhắn quan trọng hoặc nhạy cảm (ví dụ: vấn đề tài chính, dữ liệu cá nhân, tranh chấp hoàn tiền).  \n       - AI có thể bối rối hoặc nguy cơ trả lời sai.\n\n**Cấu trúc JSON trả về (chỉ JSON, không thêm text khác):**\n\n```json\n{\n  \"intent\": \"<tóm tắt yêu cầu chính của khách>\",\n  \"tone\": \"<tích_cực | trung_lập | tiêu_cực | khẩn_cấp>\",\n  \"level\": \"<AI | Human>\"\n}\n```\n\n**Hướng dẫn phân loại tone:**\n- **tích_cực** → tin nhắn thân thiện, cảm ơn, hài lòng.  \n- **trung_lập** → hỏi thông tin, câu hỏi đơn giản, yêu cầu thực tế.  \n- **tiêu_cực** → khiếu nại, không hài lòng, thất vọng.  \n- **khẩn_cấp** → vấn đề quan trọng, tức giận, cần phản hồi ngay.\n\n**Ví dụ:**\n\n**Đầu vào:**  \n> \"Tôi bị trừ tiền hai lần cho đơn hàng và cần được giúp.\"\n\n**Đầu ra:**  \n```json\n{\n  \"intent\": \"khiếu nại trừ tiền hai lần\",\n  \"tone\": \"tiêu_cực\",\n  \"level\": \"Human\"\n}\n```\n\n**Đầu vào:**  \n> \"Cửa hàng của bạn mở cửa giờ nào vào Chủ nhật?\"\n\n**Đầu ra:**  \n```json\n{\n  \"intent\": \"hỏi giờ mở cửa\",\n  \"tone\": \"trung_lập\",\n  \"level\": \"AI\"\n}\n```\n\n**Đầu vào:**  \n> \"Đơn hàng của tôi bị trễ, tôi cần nhận ngay!\"\n\n**Đầu ra:**  \n```json\n{\n  \"intent\": \"yêu cầu giao hàng gấp\",\n  \"tone\": \"khẩn_cấp\",\n  \"level\": \"Human\"\n}\n```\n\n**Đầu vào:**  \n> \"Tôi có thể kiểm tra trạng thái đơn hàng không?\"\n\n**Đầu ra:**  \n```json\n{\n  \"intent\": \"kiểm tra trạng thái đơn hàng\",\n  \"tone\": \"trung_lập\",\n  \"level\": \"AI\"\n}\n```\n\n**Ghi chú về tính linh hoạt:**\n- Nếu tin nhắn phức tạp nhưng không khẩn cấp, AI vẫn có thể trả lời và giữ `level: AI`.  \n- Nếu có nhiều intent, tóm tắt **intent chính**.  \n- JSON **phải hợp lệ**, không thêm text, chú thích hay format khác.\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3,
+      "position": [
+        -528,
+        192
+      ],
+      "id": "43cebb01-4b5c-40d2-8720-32681a988c85",
+      "name": "AI phân tích ngữ cảnh"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        416,
+        0
+      ],
+      "id": "577906e8-0eae-42b1-968d-f50137f9c108",
+      "name": "No Operation, do nothing1"
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "tableId": "messenger_api",
+        "returnAll": true,
+        "matchType": "allFilters",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "status",
+              "condition": "eq",
+              "keyValue": "Pending"
+            },
+            {
+              "keyName": "Sender ID",
+              "condition": "eq",
+              "keyValue": "={{ $('Code in JavaScript2').first().json.normalized.format }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        -896,
+        192
+      ],
+      "id": "6a778ab5-da26-42e3-b688-18a74a494b77",
+      "name": "Get many rows1",
+      "executeOnce": false,
+      "alwaysOutputData": true,
+      "credentials": {
+        "supabaseApi": {
+          "id": "pTrcgCR6InvhD4Sg",
+          "name": "otimo-messenger"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "40c6b4e6-62bc-4fa2-beb9-0801527c0b52",
+              "leftValue": "={{ $('Get many rows1').first().json.id }}",
+              "rightValue": "",
+              "operator": {
+                "type": "number",
+                "operation": "exists",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -736,
+        192
+      ],
+      "id": "82c6db9f-4b1e-40f3-b0c3-b27fdd8d8f7e",
+      "name": "If3"
+    },
+    {
+      "parameters": {
+        "tableId": "messenger_api",
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": "Sender ID",
+              "fieldValue": "={{ $('Code in JavaScript2').first().json.normalized.format }}"
+            },
+            {
+              "fieldId": "Recipient ID",
+              "fieldValue": "={{ $('When Executed by Another Workflow').item.json.id_trang }}"
+            },
+            {
+              "fieldId": "Message ID",
+              "fieldValue": "={{ $('When Executed by Another Workflow').item.json.messenger[0].message.mid }}"
+            },
+            {
+              "fieldId": "Message Text",
+              "fieldValue": "={{ $('Redis Message Aggregator').item.json.originalMessages.map(m => m.content).join(',\\n') }}"
+            },
+            {
+              "fieldId": "status",
+              "fieldValue": "Pending"
+            },
+            {
+              "fieldId": "Timestamp",
+              "fieldValue": "={{ $('When Executed by Another Workflow').first().json.messenger[0].timestamp.toDateTime('ms').format('yyyy-MM-dd') }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        208,
+        0
+      ],
+      "id": "6e2ade3a-a61c-4b57-9dcb-9200215f2a1b",
+      "name": "Create a row1",
+      "executeOnce": false,
+      "credentials": {
+        "supabaseApi": {
+          "id": "pTrcgCR6InvhD4Sg",
+          "name": "otimo-messenger"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## Node đợi và gộp tin nhắn",
+        "height": 304,
+        "width": 192
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -1168,
+        80
+      ],
+      "id": "8a8456d0-ee6e-411e-8438-10cde679a7e3",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "## Lưu trữ tin nhắn",
+        "height": 304,
+        "width": 192
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -960,
+        80
+      ],
+      "id": "88386975-ab1f-494d-a346-621eb503ac1b",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "## Phân tích ngữ cảnh",
+        "height": 176,
+        "width": 352
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -576,
+        128
+      ],
+      "id": "5997eabd-5e25-402f-9de9-0078726520f6",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "content": "## Trả lời khách hàng",
+        "height": 176,
+        "width": 352
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        192,
+        336
+      ],
+      "id": "43c0f33b-d4bf-4139-9ed5-9d8f779d4b54",
+      "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://open.larksuite.com/open-apis/bot/v2/hook/b8404697-61b0-43db-932d-68a30c5ba260",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"msg_type\": \"interactive\",\n  \"card\": {\n    \"config\": {\n      \"wide_screen_mode\": true\n    },\n    \"header\": {\n      \"title\": {\n        \"tag\": \"plain_text\",\n        \"content\": \"Xin hãy trả lời tin nhắn @[{{ $('When Executed by Another Workflow').first().json.messenger[0].sender.id }}]\"\n      },\n      \"template\": \"red\"\n    },\n    \"elements\": [\n      {\n        \"tag\": \"div\",\n        \"text\": {\n          \"tag\": \"lark_md\",\n          \"content\": \"**Nội dung tin nhắn**: {{ $json['Message Text'] }} - **Trạng thái**: Chưa làm\"\n        }\n      },\n      {\n        \"tag\": \"div\",\n        \"text\": {\n          \"tag\": \"lark_md\",\n          \"content\": \"**Message ID**: {{ $json['Message ID'] }}\"\n        }\n      },\n      {\n        \"tag\": \"action\",\n        \"actions\": [\n          {\n            \"tag\": \"button\",\n            \"text\": {\n              \"tag\": \"plain_text\",\n              \"content\": \"Phản Hồi\"\n            },\n            \"type\": \"url\",\n            \"url\": \"https://n8ntina129.hubairdrop.id.vn/webhook/7cd5f029-2e94-44c8-9cc7-d59ca61b1493\"\n          }\n        ]\n      }\n    ]\n  }\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        0,
+        0
+      ],
+      "id": "bb49dd33-1a89-4598-adac-d5d78191694a",
+      "name": "larksuite"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -672,
+        400
+      ],
+      "id": "a51ed3f7-143e-4aef-aa97-25d8c14c7a08",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "zj6yLbnvVd30JHKi",
+          "name": "Google Gemini - Tân"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        128,
+        608
+      ],
+      "id": "a02b2da5-88fe-4c8c-9d4f-e1bf997a4d12",
+      "name": "Google Gemini Chat Model1",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "zj6yLbnvVd30JHKi",
+          "name": "Google Gemini - Tân"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.embeddingsGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        544,
+        832
+      ],
+      "id": "fbe4a58a-acab-4f08-bb5f-1f2eca40c7da",
+      "name": "Embeddings Google Gemini",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "zj6yLbnvVd30JHKi",
+          "name": "Google Gemini - Tân"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://graph.facebook.com/944226338957996/messages",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "facebookGraphApi",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "recipient"
+            },
+            {
+              "name": "message"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": true
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -352,
+        704
+      ],
+      "id": "545724e4-a7eb-46ee-aed1-6135e8a49265",
+      "name": "HTTP Request",
+      "credentials": {
+        "facebookGraphApi": {
+          "id": "YpVj1KHphEUi2h2Q",
+          "name": "Cẩm Nang Gối Lò Credential"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Create a row": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Postgres Chat Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        []
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Supabase": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript2": {
+      "main": [
+        [
+          {
+            "node": "Redis Message Aggregator",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Redis Message Aggregator": {
+      "main": [
+        [
+          {
+            "node": "Get many rows1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "AI phân tích ngữ cảnh",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch1": {
+      "main": [
+        [
+          {
+            "node": "larksuite",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Create a row",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI phân tích ngữ cảnh": {
+      "main": [
+        [
+          {
+            "node": "Switch1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get many rows1": {
+      "main": [
+        [
+          {
+            "node": "If3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If3": {
+      "main": [
+        [],
+        [
+          {
+            "node": "AI phân tích ngữ cảnh",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create a row1": {
+      "main": [
+        [
+          {
+            "node": "No Operation, do nothing1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "larksuite": {
+      "main": [
+        [
+          {
+            "node": "Create a row1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI phân tích ngữ cảnh",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings Google Gemini": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Supabase",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "373ee4ea-34fb-40c7-894a-3af8c3410f0e",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "df75f6d19da9532b87ea5a84541b4ccc1d0dd5baf896242962b0dfcbc492bcf4"
+  },
+  "id": "GpH8c4giouklpJT7",
+  "tags": []
+}

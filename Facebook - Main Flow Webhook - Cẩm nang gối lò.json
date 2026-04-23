@@ -1,0 +1,1103 @@
+{
+  "name": "Facebook - Main Flow Webhook - Cẩm nang gối lò",
+  "nodes": [
+    {
+      "parameters": {
+        "respondWith": "text",
+        "responseBody": "={{ $json.query[\"hub.challenge\"] }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [
+        864,
+        -464
+      ],
+      "id": "7f2265aa-4f13-4c7f-bdb2-614b661b6b14",
+      "name": "Respond to Webhook2"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $('Webhook').item.json.body.entry[0].changes[0].value.verb }}",
+                    "rightValue": "edited",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "afbd9bb8-5459-4205-8bdd-01857561dc5b"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Post-edited"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "0d33858a-291a-45f2-a31a-b5e1a52d4145",
+                    "leftValue": "={{ $('Webhook').item.json.body.entry[0].changes[0].value.verb }}",
+                    "rightValue": "add",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Post-add"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.3,
+      "position": [
+        1760,
+        -224
+      ],
+      "id": "3d6e69b2-4c86-4525-b4d4-ff0011a7622a",
+      "name": "Switch1"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1gVSCss5uZ-GN0ZO_ZiU950rTXy0tmEf6T5ASGHd5354",
+          "mode": "list",
+          "cachedResultName": "TỔNG HỢP BÀI VIẾT TRÊN FANPAGE",
+          "cachedResultUrl": "YOUR_GOOGLE_SHEET_URL"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Cẩm Nang Gối Lò",
+          "cachedResultUrl": "YOUR_GOOGLE_SHEET_URL"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "ID": "={{ $('Webhook').item.json.body.entry[0].changes[0].value.post_id }}",
+            "Link bài viết": "=https://www.facebook.com/{{ $('Webhook').item.json.body.entry[0].changes[0].value.from.id }}/posts/{{ $('Webhook').item.json.body.entry[0].changes[0].value.post_id.split(\"_\")[1] }}",
+            "Link hình ảnh": "={{ $('Webhook').item.json.body.entry[0].changes[0].value.link }}",
+            "Created_time": "={{ $('Webhook').item.json.body.entry[0].time.toDateTime('s').format('yyyy-MM-dd HH:MM') }}",
+            "Title": "={{ $json.title }}",
+            "Description": "={{ $json.content }}",
+            "Danh mục": "Cẩm nang gối lò"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "ID",
+              "displayName": "ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Link bài viết",
+              "displayName": "Link bài viết",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Link hình ảnh",
+              "displayName": "Link hình ảnh",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Created_time",
+              "displayName": "Created_time",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Title",
+              "displayName": "Title",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Description",
+              "displayName": "Description",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Danh mục",
+              "displayName": "Danh mục",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Page",
+              "displayName": "Page",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Trạng thái",
+              "displayName": "Trạng thái",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Trạng thái đăng Zalo",
+              "displayName": "Trạng thái đăng Zalo",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Link sau khi publish",
+              "displayName": "Link sau khi publish",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1984,
+        -144
+      ],
+      "id": "9eb151a1-b859-4cd0-9f03-30f4824b47d3",
+      "name": "Append row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "T4BIlZq3O0X4Tg2N",
+          "name": "Lamtuyen account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1gVSCss5uZ-GN0ZO_ZiU950rTXy0tmEf6T5ASGHd5354",
+          "mode": "list",
+          "cachedResultName": "TỔNG HỢP BÀI VIẾT TRÊN FANPAGE",
+          "cachedResultUrl": "YOUR_GOOGLE_SHEET_URL"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Cẩm Nang Gối Lò",
+          "cachedResultUrl": "YOUR_GOOGLE_SHEET_URL"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "ID": "={{ $('Webhook').item.json.body.entry[0].changes[0].value.post_id }}",
+            "Created_time": "={{ $('Webhook').item.json.body.entry[0].time.toDateTime('s').format('yyyy-MM-dd HH:MM') }}",
+            "Link bài viết": "=https://www.facebook.com/{{ $('Webhook').item.json.body.entry[0].changes[0].value.from.id }}/posts/{{ $('Webhook').item.json.body.entry[0].changes[0].value.post_id.split(\"_\")[1] }}",
+            "Link hình ảnh": "={{ $('Webhook').item.json.body.entry[0].changes[0].value.link }}",
+            "Description": "={{ $json.content }}",
+            "Title": "={{ $json.title }}"
+          },
+          "matchingColumns": [
+            "ID"
+          ],
+          "schema": [
+            {
+              "id": "ID",
+              "displayName": "ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Link bài viết",
+              "displayName": "Link bài viết",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Link hình ảnh",
+              "displayName": "Link hình ảnh",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Created_time",
+              "displayName": "Created_time",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Title",
+              "displayName": "Title",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Description",
+              "displayName": "Description",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Danh mục",
+              "displayName": "Danh mục",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Page",
+              "displayName": "Page",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Trạng thái",
+              "displayName": "Trạng thái",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Trạng thái đăng Zalo",
+              "displayName": "Trạng thái đăng Zalo",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Link sau khi publish",
+              "displayName": "Link sau khi publish",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1984,
+        -304
+      ],
+      "id": "4daa1062-da8d-4aef-834c-cfeaa319cae1",
+      "name": "Append or update row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "T4BIlZq3O0X4Tg2N",
+          "name": "Lamtuyen account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Lấy dữ liệu từ item trước đó\nconst message =$input.first().json.body.entry[0].changes[0].value.message ;\n\n// Kiểm tra nếu có message\nif (!message) {\n  throw new Error(\"Không tìm thấy trường body.message\");\n}\n\n// Tách tiêu đề và nội dung\nconst parts = message.split(/\\n\\s*\\n/);\nlet title = parts[0].trim();\nlet content = parts.slice(1).join(\"\\n\\n\").trim();\n\n// Nếu không tách được bằng \\n\\n thì dùng \\n đơn\nif (!content && message.includes('\\n')) {\n  const lines = message.split('\\n');\n  title = lines[0].trim();\n  content = lines.slice(1).join('\\n').trim();\n}\n\n// Dọn \\n thừa ở đầu content\ncontent = content.replace(/^\\n+/, '').trim();\n\n/* ================== PHẦN MỚI – XÓA SẠCH MỌI THỨ THỪA Ở CUỐI BÀI ================== */\n// Xóa từ các ký tự sau trở đi đến hết chuỗi:\n// - chuỗi # liên tiếp (###, ####…)\n// - hashtag (#tipslambanh, #meolambanh…)\n// - các ký tự thừa như }, ], \", ' v.v.\ncontent = content.replace(\n  /\\s*(#{3,}|#[\\w\\u00C0-\\uFFFF]+|\\}+|\\]+|\"+|'+|\\*+|\\++|#+.*|Camanggoilo.*)$/gim,\n  ''\n).trim();\n\n// Thêm một lần dọn nữa để loại bỏ hoàn toàn dòng trống thừa ở cuối\ncontent = content.replace(/\\n{3,}$/, '\\n\\n').trim();\n\n// Nếu nội dung sau khi dọn bị rỗng (hiếm gặp) thì giữ lại ít nhất 1 dòng trống\nif (content === '') content = '';\n\n/* =============================================================================== */\n\n// Trả về kết quả\nreturn [{\n  json: {\n    title: title,\n    content: content\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1536,
+        -224
+      ],
+      "id": "f9bbe52f-5706-466b-bda4-3a46ec46abc6",
+      "name": "Tách tiêu đề và content"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "db52edc6-b839-4ceb-8f3b-540cf9bdc851",
+              "leftValue": "={{ $json.body.entry[0].changes[0].value.item }}",
+              "rightValue": "photo",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1312,
+        -208
+      ],
+      "id": "d0a59bc8-33d7-402d-8f29-1c414535c4ac",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "b0f290fd-044f-4dcf-8077-3806d64b5fd0",
+              "leftValue": "={{ $json.body.entry[0].id }}",
+              "rightValue": "944226338957996",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        864,
+        -208
+      ],
+      "id": "8af140c5-77bb-413c-b744-248584cfd646",
+      "name": "If1"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "3YiF4b4GPq82MlWp",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/3YiF4b4GPq82MlWp",
+          "cachedResultName": "Facebook - Comment - SubFlow - Page Test"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {}
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.3,
+      "position": [
+        1360,
+        -480
+      ],
+      "id": "cf2578b0-fd37-48df-a33d-86b61fa31963",
+      "name": "Call 'Facebook - Comment - SubFlow - Page Test'"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://graph.facebook.com/{{ $('Switch3').item.json.body.entry[0].id }}/messages",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "facebookGraphApi",
+        "sendQuery": true,
+        "specifyQuery": "json",
+        "jsonQuery": "={{ $json.data }}",
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": true
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1760,
+        80
+      ],
+      "id": "6190e595-f03d-45ae-96ee-774425d7097d",
+      "name": "HTTP Request",
+      "credentials": {
+        "facebookGraphApi": {
+          "id": "YpVj1KHphEUi2h2Q",
+          "name": "Cẩm Nang Gối Lò Credential"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## Phân biệt 2 page",
+        "height": 192,
+        "width": 150
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        832,
+        -288
+      ],
+      "id": "800ddc0d-7161-4a2d-a27f-ce70a30b0ad8",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "cdde41ed-cca7-46d7-952b-4852ca0d835a",
+                    "leftValue": "={{ $json.body.entry[0].changes[0].value.item }}",
+                    "rightValue": "reaction",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Reaction Post"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "929073d0-c657-46bd-a2a4-da8d66015f3e",
+                    "leftValue": "={{ $('Webhook').item.json.body.entry[0].changes[0].value.item }}",
+                    "rightValue": "comment",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Comnent"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "f4733c00-b258-427f-8ee5-57c342dbd78e",
+                    "leftValue": "={{ $('Webhook').item.json.body.entry[0].changes[0].value.verb }}",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "string",
+                      "operation": "exists",
+                      "singleValue": true
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Post_add"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "b69db62a-48de-4ecb-8d2f-95d386563e7d",
+                    "leftValue": "={{ $('Webhook').item.json.body.entry[0].messaging }}",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "array",
+                      "operation": "exists",
+                      "singleValue": true
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Messenger"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.3,
+      "position": [
+        1088,
+        -256
+      ],
+      "id": "158318da-3b1d-4545-9c65-fe6ff03f2251",
+      "name": "Switch2"
+    },
+    {
+      "parameters": {
+        "content": "## Gửi tin nhắn khi có tin nhắn nội dung Tôi muốn nhận sách\n\n",
+        "height": 240,
+        "width": 374,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1520,
+        -16
+      ],
+      "id": "de6704ec-d7b6-47da-9950-56ea39accb2c",
+      "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
+        "multipleMethods": true,
+        "path": "camnanggoilo-fanpage",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        640,
+        -304
+      ],
+      "id": "22df479a-f31d-442c-99de-2e57f9537b09",
+      "name": "Webhook",
+      "webhookId": "11f2470b-a7d3-445f-b387-7e49a3829bb9"
+    },
+    {
+      "parameters": {
+        "content": "## Lưu lại bài viết lên GG sheet\n\n\n",
+        "height": 256,
+        "width": 918,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1296,
+        -304
+      ],
+      "id": "6484f1bc-414c-43c9-884e-a4a6214e947b",
+      "name": "Sticky Note4"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.body.entry[0].messaging[0].postback.payload }}",
+                    "rightValue": "Tôi muốn nhận sách",
+                    "operator": {
+                      "type": "string",
+                      "operation": "exists",
+                      "singleValue": true
+                    },
+                    "id": "dacf8b9c-53c2-43ff-bad0-d36ad46324bb"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Postback"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "929073d0-c657-46bd-a2a4-da8d66015f3e",
+                    "leftValue": "={{ $json.body.entry[0].messaging[0].postback }}",
+                    "rightValue": "comment",
+                    "operator": {
+                      "type": "object",
+                      "operation": "notExists",
+                      "singleValue": true
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Messenger"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.3,
+      "position": [
+        1312,
+        96
+      ],
+      "id": "768c8901-9037-41a0-88ef-b093f537c95f",
+      "name": "Switch3"
+    },
+    {
+      "parameters": {
+        "jsCode": "const body ={\n  \"recipient\":{\n    \"id\":`${$input.first().json.body.entry[0].messaging[0].sender.id}`\n},\n  \"message\": {\n    \"text\":$('Webhook').first().json.body.entry[0].messaging[0].postback.payload\n}}\nreturn { data: JSON.stringify(body) }"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1536,
+        80
+      ],
+      "id": "09587c7a-0137-42bc-990e-4c1b65e09a50",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://open.larksuite.com/open-apis/bot/v2/hook/4d2e52d1-b24b-42cc-87a7-f21874a5502e",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"msg_type\": \"interactive\",\n  \"card\": {\n    \"config\": {\n      \"wide_screen_mode\": true\n    },\n    \"header\": {\n      \"title\": {\n        \"tag\": \"plain_text\",\n        \"content\": \"[Tin nhắn] Có tin nhắn từ: {{ $json.data[1].from.name }}\"\n      },\n      \"template\": \"green\"\n    },\n    \"elements\": [\n      {\n        \"tag\": \"div\",\n        \"text\": {\n          \"tag\": \"lark_md\",\n          \"content\": \"**Nội dung tin nhắn**: {{ $('Webhook').item.json.body.entry[0].messaging[0].message.text }}\"\n        }\n      },\n      {\n        \"tag\": \"action\",\n        \"actions\": [\n          {\n            \"tag\": \"button\",\n            \"text\": {\n              \"tag\": \"plain_text\",\n              \"content\": \"Kiểm tra tin nhắn\"\n            },\n            \"type\": \"url\",\n            \"url\": \"https://business.facebook.com/latest/inbox/all?asset_id={{ $('Webhook').item.json.body.entry[0].messaging[0].recipient.id }}&selected_item_id={{ $('Lấy conversation id').item.json.data[0].id }}\"\n          }\n        ]\n      }\n    ]\n  }\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1904,
+        224
+      ],
+      "id": "42f69930-a3e5-4c9b-9112-86e7ec386547",
+      "name": "Nhắn tin - lark"
+    },
+    {
+      "parameters": {
+        "url": "https://graph.facebook.com/v19.0/944226338957996/conversations",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "facebookGraphApi",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "user_id",
+              "value": "={{ $('Webhook').item.json.body.entry[0].messaging[0].sender.id }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        1456,
+        224
+      ],
+      "id": "5a8cdb0b-ac4d-4353-8787-80f18d7a7e3a",
+      "name": "Lấy conversation id",
+      "credentials": {
+        "facebookGraphApi": {
+          "id": "YpVj1KHphEUi2h2Q",
+          "name": "Cẩm Nang Gối Lò Credential"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "=https://graph.facebook.com/v19.0/{{ $json.data[0].id }}/messages",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "facebookGraphApi",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "fields",
+              "value": "message,created_time,from,attachments"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        1680,
+        224
+      ],
+      "id": "c016bf16-4156-42e3-838c-0fca503171b0",
+      "name": "Lấy thông tin tin nhắn",
+      "credentials": {
+        "facebookGraphApi": {
+          "id": "YpVj1KHphEUi2h2Q",
+          "name": "Cẩm Nang Gối Lò Credential"
+        }
+      }
+    }
+  ],
+  "pinData": {
+    "Webhook": [
+      {
+        "json": {
+          "headers": {
+            "host": "n8n.otimo.vn",
+            "x-real-ip": "173.252.95.6",
+            "x-forwarded-for": "173.252.95.6",
+            "x-forwarded-proto": "https",
+            "connection": "Upgrade",
+            "content-length": "398",
+            "accept": "*/*",
+            "accept-encoding": "deflate, gzip",
+            "user-agent": "facebookexternalua",
+            "content-type": "application/json",
+            "x-hub-signature": "sha1=d0474030a98730017e38b415b3e7ff369af9f7af",
+            "x-hub-signature-256": "sha256=2d6c09c9bd5a9a22bf7eaa40e73feff501975ea4f43d0e5b2b8fda516d1901ed",
+            "facebook-api-version": "v24.0"
+          },
+          "params": {},
+          "query": {},
+          "body": {
+            "object": "page",
+            "entry": [
+              {
+                "time": 1767695621155,
+                "id": "944226338957996",
+                "messaging": [
+                  {
+                    "sender": {
+                      "id": "33565986353015130"
+                    },
+                    "recipient": {
+                      "id": "944226338957996"
+                    },
+                    "timestamp": 1767695620244,
+                    "message": {
+                      "mid": "m_EQhz2mTqiDgWn0jmgT7UesGozPchP-wzGNlf58H_ILQTtIgT6f1Wed-NuuwMOt_KqORU_auU67rRpahKtIjfww",
+                      "text": "E đang hk làm bánh và muốn nghiên cứu hk hỏi ạ"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "webhookUrl": "https://n8n.otimo.vn/webhook/camnanggoilo-fanpage",
+          "executionMode": "production"
+        },
+        "pairedItem": {
+          "item": 0,
+          "input": 1
+        }
+      }
+    ]
+  },
+  "connections": {
+    "Switch1": {
+      "main": [
+        [
+          {
+            "node": "Append or update row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Tách tiêu đề và content": {
+      "main": [
+        [
+          {
+            "node": "Switch1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Tách tiêu đề và content",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "Switch2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "Switch2": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Call 'Facebook - Comment - SubFlow - Page Test'",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Switch3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch3": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Lấy conversation id",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Lấy conversation id": {
+      "main": [
+        [
+          {
+            "node": "Lấy thông tin tin nhắn",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Lấy thông tin tin nhắn": {
+      "main": [
+        [
+          {
+            "node": "Nhắn tin - lark",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "96348cb5-ee55-4e1a-8265-90f921f5565a",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "df75f6d19da9532b87ea5a84541b4ccc1d0dd5baf896242962b0dfcbc492bcf4"
+  },
+  "id": "Md4W5OvN4vVvSJVx",
+  "tags": []
+}

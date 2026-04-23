@@ -1,0 +1,508 @@
+{
+  "name": "Facebook - Main Flow Webhook - Page Test",
+  "nodes": [
+    {
+      "parameters": {
+        "respondWith": "text",
+        "responseBody": "={{ $json.query[\"hub.challenge\"] }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [
+        -384,
+        272
+      ],
+      "id": "14da2a71-052d-456d-bf18-c9d873e8b8e6",
+      "name": "Respond to Webhook2"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.body.entry[0].changes[0].value.item }}",
+                    "rightValue": "reaction",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "dacf8b9c-53c2-43ff-bad0-d36ad46324bb"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Reaction"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "929073d0-c657-46bd-a2a4-da8d66015f3e",
+                    "leftValue": "={{ $json.body.entry[0].changes[0].value.item }}",
+                    "rightValue": "comment",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals",
+                      "name": "filter.operator.equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Comnent"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "f4733c00-b258-427f-8ee5-57c342dbd78e",
+                    "leftValue": "={{ $('Webhook').item.json.body.entry[0].changes[0].value.verb }}",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "string",
+                      "operation": "exists",
+                      "singleValue": true
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Post_add"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "b69db62a-48de-4ecb-8d2f-95d386563e7d",
+                    "leftValue": "={{ $('Webhook').item.json.body.entry[0].messaging }}",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "array",
+                      "operation": "exists",
+                      "singleValue": true
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Messenger"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.3,
+      "position": [
+        -432,
+        640
+      ],
+      "id": "f22e0d6f-eb07-4caa-8f25-d470317468a2",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "650794f7-4fbe-47db-bfb0-158ef07c360f",
+              "leftValue": "={{ $json.from_comment_id }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "exists",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -48,
+        112
+      ],
+      "id": "86a60915-60fd-4a02-a8d6-2feee3a3cc7b",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "c31c4726-1f65-4f3c-a749-86665015f813",
+              "name": "message",
+              "value": "={{ $json.message }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -32,
+        1136
+      ],
+      "id": "fa92195c-595f-4fe4-9479-ae7aae6315c9",
+      "name": "Edit Fields3"
+    },
+    {
+      "parameters": {
+        "content": "## Nhận Tín hiệu và trả tín hiệu cho Meta Developers",
+        "height": 288,
+        "width": 416,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -832,
+        256
+      ],
+      "id": "efb7025d-54e7-4aba-90c2-b2d2994e99a3",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "## Định dạng và lọc tín hiệu",
+        "height": 288,
+        "width": 416,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -592,
+        560
+      ],
+      "id": "01e14b37-c239-4df2-8d1b-19f8370e21a3",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "## Định dạng và gọi workflow khác để lưu bài post",
+        "height": 208,
+        "width": 576,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -112,
+        1072
+      ],
+      "id": "5bb23dd4-379e-4271-a7cd-7a4008947d8b",
+      "name": "Sticky Note6"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "966e2fbb-7d21-41d8-bbdf-1867708e5187",
+              "name": "messenger",
+              "value": "={{ $('Webhook').item.json.body.entry[0].messaging }}",
+              "type": "array"
+            },
+            {
+              "id": "f2796f9f-6cae-4027-a112-50790d47866c",
+              "name": "id_trang",
+              "value": "={{ $('Webhook').item.json.body.entry[0].id }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -528,
+        1088
+      ],
+      "id": "d997e88f-65fe-4468-b241-ebe48440a733",
+      "name": "Edit Fields4"
+    },
+    {
+      "parameters": {
+        "respondWith": "text",
+        "responseBody": "EVENT_RECEIVED",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.2,
+      "position": [
+        -672,
+        1088
+      ],
+      "id": "d173d417-f2b0-4b43-89f0-423bc76137b6",
+      "name": "RECEIVED",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "multipleMethods": true,
+        "path": "11f2470b-a7d3-445f-b387-7e49a3829bb9",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -720,
+        368
+      ],
+      "id": "86574779-480f-4558-af5a-b3f9a3511ff9",
+      "name": "Webhook",
+      "webhookId": "11f2470b-a7d3-445f-b387-7e49a3829bb9"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "3YiF4b4GPq82MlWp",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/3YiF4b4GPq82MlWp",
+          "cachedResultName": "Facebook - Comment - SubFlow - Page Test"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {
+          "waitForSubWorkflow": true
+        }
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.3,
+      "position": [
+        160,
+        640
+      ],
+      "id": "eec40d1a-d67a-45a8-a049-2d65107fe790",
+      "name": "Call 'Facebook - Comment - SubFlow - Page Test'"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "3MW4ovAm1B5GU8Ul",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/3MW4ovAm1B5GU8Ul",
+          "cachedResultName": "Facebook - Post - Reaction - SubFlow - Page Test"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {}
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.3,
+      "position": [
+        160,
+        208
+      ],
+      "id": "7737bc09-2236-442a-ae5f-4a8b141868a0",
+      "name": "Call 'Facebook - Post - Reaction - SubFlow - Page Test'"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "QIudxM7FFPp6w8Pc",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/QIudxM7FFPp6w8Pc",
+          "cachedResultName": "Facebook - Post  - Tự Động Lưu Bài Viết - Page Test"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {}
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.3,
+      "position": [
+        176,
+        1136
+      ],
+      "id": "4b969cf9-1475-4db7-9eec-bebf877902f9",
+      "name": "Call 'Facebook - Post - SubFlow -  Tự Động Lưu Bài Viết - Page Test'"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "GpH8c4giouklpJT7",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/GpH8c4giouklpJT7",
+          "cachedResultName": "Facebook - Messenger - SubFlow - AI - Page Test"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {}
+        },
+        "mode": "each",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.3,
+      "position": [
+        -336,
+        1088
+      ],
+      "id": "2d61e95a-60a6-47c2-be43-9068151597df",
+      "name": "Call 'Facebook - Messenger - SubFlow - AI - Page Test'"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [],
+        [
+          {
+            "node": "Edit Fields3",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "RECEIVED",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Call 'Facebook - Post - Reaction - SubFlow - Page Test'",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields3": {
+      "main": [
+        [
+          {
+            "node": "Call 'Facebook - Post - SubFlow -  Tự Động Lưu Bài Viết - Page Test'",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields4": {
+      "main": [
+        [
+          {
+            "node": "Call 'Facebook - Messenger - SubFlow - AI - Page Test'",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "RECEIVED": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "f250416e-e27f-415f-bb84-e7ec9b339cba",
+  "meta": {
+    "instanceId": "df75f6d19da9532b87ea5a84541b4ccc1d0dd5baf896242962b0dfcbc492bcf4"
+  },
+  "id": "as2J9JlX664JjAug",
+  "tags": []
+}

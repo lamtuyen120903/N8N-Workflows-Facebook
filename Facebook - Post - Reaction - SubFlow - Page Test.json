@@ -1,0 +1,132 @@
+{
+  "name": "Facebook - Post - Reaction - SubFlow - Page Test",
+  "nodes": [
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "76582ab0-d495-482d-be32-753eb34b9208",
+              "name": "sender_id",
+              "value": "={{ $json.id_khach_hang }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        160,
+        -16
+      ],
+      "id": "edd76ce9-b28a-4aa6-b09c-10570e491d20",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "jsCode": "const body ={\n  \"recipient\":{\n    \"id\":`${$('Edit Fields').first().json['sender_id']}`\n},\n  \"message\": {\n    \"text\":\"Chào bạn cảm ơn bạn đã tương tác với bài viết của chúng tôi. Nếu bạn quan tâm đến làm bánh, hãy tham gia group zalo này để học hỏi thêm nhiều kiến thức mới nhá: https://zalo.me/g/ujerqq444 \"\n}}\nreturn { data: JSON.stringify(body) }"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        352,
+        -16
+      ],
+      "id": "7bfc2ab3-eafc-4ef6-b7ea-1eaf34a3a8f8",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://graph.facebook.com/{{ $('When Executed by Another Workflow').item.json.id_trang }}/messages",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "facebookGraphApi",
+        "sendQuery": true,
+        "specifyQuery": "json",
+        "jsonQuery": "={{ $('Code in JavaScript').item.json.data }}",
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": true
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        512,
+        -16
+      ],
+      "id": "7346075b-7d4c-4e23-b68e-53fead91af74",
+      "name": "HTTP Request",
+      "credentials": {
+        "facebookGraphApi": {
+          "id": "ppkaKLhu4DbmuQDM",
+          "name": "Zepsora Credential"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "inputSource": "passthrough"
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -32,
+        -16
+      ],
+      "id": "232090d9-aea7-4a66-8431-9d2246aa6230",
+      "name": "When Executed by Another Workflow"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "57f80b33-a941-491d-b615-02636102658d",
+  "meta": {
+    "instanceId": "df75f6d19da9532b87ea5a84541b4ccc1d0dd5baf896242962b0dfcbc492bcf4"
+  },
+  "id": "3MW4ovAm1B5GU8Ul",
+  "tags": []
+}

@@ -1,0 +1,294 @@
+{
+  "name": "Facebook - Post -  Lấy thông tin bài viết - Page Test",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -80,
+        80
+      ],
+      "id": "0a6eb579-d4ec-420d-a527-09feb3af7bb3",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "url": "https://graph.facebook.com/v24.0/944226338957996/posts",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "facebookGraphApi",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "fields",
+              "value": "id,message,created_time,permalink_url"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": true
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -80,
+        -144
+      ],
+      "id": "e774ca98-a14a-4ccf-ae7c-bbf21fe21d03",
+      "name": "Lấy tất cả bài viết",
+      "credentials": {
+        "facebookGraphApi": {
+          "id": "YpVj1KHphEUi2h2Q",
+          "name": "Cẩm Nang Gối Lò Credential"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "=https://graph.facebook.com/v19.0/\n944226338957996_849420050768350",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "facebookGraphApi",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "fields"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": true
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        144,
+        80
+      ],
+      "id": "3af0f87d-c544-4df4-a5dd-4560aa18dc39",
+      "name": "Lấy thông tin bài viết",
+      "credentials": {
+        "facebookGraphApi": {
+          "id": "YpVj1KHphEUi2h2Q",
+          "name": "Cẩm Nang Gối Lò Credential"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "=https://graph.facebook.com/v18.0/{{ $json.id }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "facebookGraphApi",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "fields",
+              "value": "full_picture,picture,attachments"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": true
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -80,
+        304
+      ],
+      "id": "d83153ac-53b8-4a48-9064-6628f21f0998",
+      "name": "Lấy thông tin bài viết1",
+      "credentials": {
+        "facebookGraphApi": {
+          "id": "YpVj1KHphEUi2h2Q",
+          "name": "Cẩm Nang Gối Lò Credential"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1gVSCss5uZ-GN0ZO_ZiU950rTXy0tmEf6T5ASGHd5354",
+          "mode": "list",
+          "cachedResultName": "TỔNG HỢP BÀI VIẾT TRÊN FANPAGE",
+          "cachedResultUrl": "YOUR_GOOGLE_SHEET_URL"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1078310587,
+          "mode": "list",
+          "cachedResultName": "Sheet5",
+          "cachedResultUrl": "YOUR_GOOGLE_SHEET_URL"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "ID": "={{ $('Lấy thông tin bài viết').item.json.body.id }}",
+            "Link bài viết": "=https://www.facebook.com/944226338957996/posts/{{ $('Lấy thông tin bài viết').item.json.body.id }}",
+            "Created_time": "={{ $('Lấy thông tin bài viết').item.json.body.created_time.toDateTime().format('yyyy-MM-dd') }}",
+            "Title": "={{ $json.title }}",
+            "Description": "={{ $json.content }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "ID",
+              "displayName": "ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Link bài viết",
+              "displayName": "Link bài viết",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Created_time",
+              "displayName": "Created_time",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Title",
+              "displayName": "Title",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Description",
+              "displayName": "Description",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Link sách",
+              "displayName": "Link sách",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        592,
+        80
+      ],
+      "id": "e0be6312-3d52-474e-8c98-d4047b0970cc",
+      "name": "Append row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "T4BIlZq3O0X4Tg2N",
+          "name": "Lamtuyen account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Lấy dữ liệu từ item trước đó\nconst message = $input.first().json.body.message;\n\n// Kiểm tra nếu có message\nif (!message) {\n  throw new Error(\"Không tìm thấy trường body.message\");\n}\n\n// Tách tiêu đề và nội dung\nconst parts = message.split(/\\n\\s*\\n/);\nlet title = parts[0].trim();\nlet content = parts.slice(1).join(\"\\n\\n\").trim();\n\n// Nếu không tách được bằng \\n\\n thì dùng \\n đơn\nif (!content && message.includes('\\n')) {\n  const lines = message.split('\\n');\n  title = lines[0].trim();\n  content = lines.slice(1).join('\\n').trim();\n}\n\n// Dọn \\n thừa ở đầu content\ncontent = content.replace(/^\\n+/, '').trim();\n\n/* ================== PHẦN MỚI – XÓA SẠCH MỌI THỨ THỪA Ở CUỐI BÀI ================== */\n// Xóa từ các ký tự sau trở đi đến hết chuỗi:\n// - chuỗi # liên tiếp (###, ####…)\n// - hashtag (#tipslambanh, #meolambanh…)\n// - các ký tự thừa như }, ], \", ' v.v.\ncontent = content.replace(\n  /\\s*(#{3,}|#[\\w\\u00C0-\\uFFFF]+|\\}+|\\]+|\"+|'+|\\*+|\\++|#+.*|Camanggoilo.*)$/gim,\n  ''\n).trim();\n\n// Thêm một lần dọn nữa để loại bỏ hoàn toàn dòng trống thừa ở cuối\ncontent = content.replace(/\\n{3,}$/, '\\n\\n').trim();\n\n// Nếu nội dung sau khi dọn bị rỗng (hiếm gặp) thì giữ lại ít nhất 1 dòng trống\nif (content === '') content = '';\n\n/* =============================================================================== */\n\n// Trả về kết quả\nreturn [{\n  json: {\n    title: title,\n    content: content\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        368,
+        80
+      ],
+      "id": "0669eda3-41ae-4831-9f85-ca6a222c3a4f",
+      "name": "Tách tiêu đề và content"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Lấy thông tin bài viết",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Lấy tất cả bài viết": {
+      "main": [
+        []
+      ]
+    },
+    "Lấy thông tin bài viết": {
+      "main": [
+        [
+          {
+            "node": "Tách tiêu đề và content",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Tách tiêu đề và content": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "3102ed34-fb2c-4422-a20b-95d15e52206d",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "df75f6d19da9532b87ea5a84541b4ccc1d0dd5baf896242962b0dfcbc492bcf4"
+  },
+  "id": "ZfzkSKr5LSJcUJTA",
+  "tags": []
+}

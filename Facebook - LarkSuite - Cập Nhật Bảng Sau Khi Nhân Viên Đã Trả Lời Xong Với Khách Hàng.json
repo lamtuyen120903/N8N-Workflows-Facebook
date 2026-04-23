@@ -1,0 +1,145 @@
+{
+  "name": "Facebook - LarkSuite - Cập Nhật Bảng Sau Khi Nhân Viên Đã Trả Lời Xong Với Khách Hàng",
+  "nodes": [
+    {
+      "parameters": {
+        "operation": "update",
+        "tableId": "messenger_api",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "status",
+              "condition": "eq",
+              "keyValue": "Pending"
+            }
+          ]
+        },
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": "status",
+              "fieldValue": "Done"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        336,
+        64
+      ],
+      "id": "2338b25d-6bf7-433a-92d5-dba301c1b1d0",
+      "name": "Update a row",
+      "credentials": {
+        "supabaseApi": {
+          "id": "pTrcgCR6InvhD4Sg",
+          "name": "otimo-messenger"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "path": "7cd5f029-2e94-44c8-9cc7-d59ca61b1493",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -112,
+        64
+      ],
+      "id": "89f68d13-a964-4105-bca6-f3c7255b490b",
+      "name": "Webhook",
+      "webhookId": "7cd5f029-2e94-44c8-9cc7-d59ca61b1493"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [
+        560,
+        64
+      ],
+      "id": "9ed72060-2cff-4f80-ba15-534d6336397c",
+      "name": "Respond to Webhook"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://open.larksuite.com/open-apis/bot/v2/hook/b8404697-61b0-43db-932d-68a30c5ba260",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"msg_type\": \"interactive\",\n  \"card\": {\n    \"config\": {\n      \"wide_screen_mode\": true\n    },\n    \"header\": {\n      \"title\": {\n        \"tag\": \"plain_text\",\n        \"content\": \"Đã giải quyết xong tất cả tin nhắn của khách hàng\"\n      },\n      \"template\": \"green\"\n    },\n    \"elements\": [\n      {\n        \"tag\": \"div\",\n        \"text\": {\n          \"tag\": \"lark_md\",\n          \"content\": \"🎉Tất cả tin nhắn đã được xử lý thành công!\"\n        }\n      }\n    ]\n  }\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        112,
+        64
+      ],
+      "id": "5876fc92-5d6c-4bd8-9bd3-b5b3ab901cd3",
+      "name": "larksuite"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Update a row": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "larksuite",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "larksuite": {
+      "main": [
+        [
+          {
+            "node": "Update a row",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "be4829cf-d5b8-4e32-aaf4-921d420ab966",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "df75f6d19da9532b87ea5a84541b4ccc1d0dd5baf896242962b0dfcbc492bcf4"
+  },
+  "id": "M0y2YSyJJIYcWcNH",
+  "tags": []
+}

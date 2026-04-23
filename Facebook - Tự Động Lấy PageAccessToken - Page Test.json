@@ -1,0 +1,690 @@
+{
+  "name": "Facebook - Tự Động Lấy PageAccessToken - Page Test",
+  "nodes": [
+    {
+      "parameters": {
+        "url": "https://graph.facebook.com/v24.0/me/accounts",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "access_token",
+              "value": "={{ $json.body.access_token }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -640,
+        368
+      ],
+      "id": "0c780d92-24d4-44be-b9bb-81917c69e27d",
+      "name": "HTTP Request1"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -1104,
+        368
+      ],
+      "id": "5e5b4491-00c3-4863-a6b2-e3aa23895e9f",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "resource": "credential",
+        "name": "={{ $json.name }}",
+        "credentialTypeName": "=facebookGraphApi",
+        "data": "={{ JSON.stringify({\n  accessToken: $json.accessToken\n}) }}",
+        "requestOptions": {}
+      },
+      "type": "n8n-nodes-base.n8n",
+      "typeVersion": 1,
+      "position": [
+        240,
+        464
+      ],
+      "id": "9d723df5-3d5b-456c-8a30-87aff5d8e1d2",
+      "name": "Create a credential",
+      "credentials": {
+        "n8nApi": {
+          "id": "c9su88mMTIioDTTu",
+          "name": "n8n account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "lấy API user dài hạn",
+        "height": 256,
+        "width": 208
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -912,
+        272
+      ],
+      "id": "aa64bb76-2afb-4b68-922b-5d9cee903e65",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "lấy API các group dài hạn dựa trên APi User",
+        "height": 256,
+        "width": 208
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -688,
+        272
+      ],
+      "id": "58c708c4-fff8-4465-a1d3-f456056c790e",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "Thay đổi định dạng",
+        "height": 256,
+        "width": 352
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -448,
+        272
+      ],
+      "id": "7b736539-f505-43da-89ed-316aee7ae28e",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "content": "## Lưu trữ Credential facebookGraphApi",
+        "height": 256,
+        "width": 352
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        160,
+        352
+      ],
+      "id": "12f965b7-b9fa-4f9b-b769-94ad7b0ed997",
+      "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://graph.facebook.com/v24.0/{{ $json.id_trang }}/subscribed_apps",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{ $json.accessToken }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "form-urlencoded",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "subscribed_fields",
+              "value": "feed"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        256,
+        736
+      ],
+      "id": "e501a57b-3e49-4036-bf15-ffdba929b218",
+      "name": "subscribed_apps"
+    },
+    {
+      "parameters": {
+        "content": "## Đăng ký để app có thể hoạt động\n",
+        "height": 192
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        192,
+        640
+      ],
+      "id": "0a6045eb-75be-4294-b33a-ec7128af5260",
+      "name": "Sticky Note4"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "data",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        -416,
+        368
+      ],
+      "id": "6c09c2f2-6ed0-453e-a028-494d75513da1",
+      "name": "Split Out"
+    },
+    {
+      "parameters": {
+        "url": "https://graph.facebook.com/v24.0/oauth/access_token",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "      grant_type",
+              "value": "fb_exchange_token"
+            },
+            {
+              "name": "              client_id",
+              "value": "YOUR_FACEBOOK_APP_ID"
+            },
+            {
+              "name": "    client_secret",
+              "value": "YOUR_FACEBOOK_APP_SECRET"
+            },
+            {
+              "name": "    fb_exchange_token",
+              "value": "YOUR_FB_EXCHANGE_TOKEN"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": true
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -864,
+        368
+      ],
+      "id": "e245a46f-01e8-449f-840a-d5f3dcf1683e",
+      "name": "HTTP Request - get user access token"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "9bdfa74a-91ee-40d9-ad26-320355d2cf6e",
+              "leftValue": "={{ $('Edit Fields').item.json.name }}",
+              "rightValue": "={{ $json.name }}",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        560,
+        144
+      ],
+      "id": "593e08f5-21ee-4a0a-9ddf-f6c80135a7bc",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "['Credentials Risk Report'].sections[0].location",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        400,
+        144
+      ],
+      "id": "e68dc989-31b4-4e80-aebb-700fd1704023",
+      "name": "Split Out1"
+    },
+    {
+      "parameters": {
+        "resource": "credential",
+        "operation": "delete",
+        "credentialId": "={{ $json.id }}",
+        "requestOptions": {}
+      },
+      "type": "n8n-nodes-base.n8n",
+      "typeVersion": 1,
+      "position": [
+        752,
+        48
+      ],
+      "id": "5f1bc97d-0671-487b-ae31-d5d784414073",
+      "name": "Delete a credential1",
+      "credentials": {
+        "n8nApi": {
+          "id": "c9su88mMTIioDTTu",
+          "name": "n8n account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## Xoá Credential facebookGraphApi cũ",
+        "height": 336,
+        "width": 1056
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "cb987427-652a-4351-83ef-804369f912cf",
+      "name": "Sticky Note5"
+    },
+    {
+      "parameters": {
+        "url": "https://graph.facebook.com/v24.0/me",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "access_token",
+              "value": "={{ $json.accessToken }}"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": true
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        240,
+        944
+      ],
+      "id": "7a7d561a-c9dd-4def-a4b0-cc0ddf9ee8c8",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "resource": "audit",
+        "operation": "generate",
+        "additionalOptions": {},
+        "requestOptions": {}
+      },
+      "type": "n8n-nodes-base.n8n",
+      "typeVersion": 1,
+      "position": [
+        192,
+        160
+      ],
+      "id": "8ec5027e-e9fd-4c9b-897e-0093b9d1cdc2",
+      "name": "Generate a security audit",
+      "credentials": {
+        "n8nApi": {
+          "id": "c9su88mMTIioDTTu",
+          "name": "n8n account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "2a5a86ff-97d2-49b7-8554-b7b90315a504",
+              "name": "=name",
+              "value": "={{ $json.name }} Credential",
+              "type": "string"
+            },
+            {
+              "id": "3a0d0eb3-b95c-4bac-959a-ad0036d0e240",
+              "name": "type",
+              "value": "facebookGraphApi",
+              "type": "string"
+            },
+            {
+              "id": "d7d247a8-8068-46fe-b315-bfc29101bb2d",
+              "name": "accessToken",
+              "value": "={{ $json.access_token }}",
+              "type": "object"
+            },
+            {
+              "id": "43a508cc-5570-4ed5-8234-7780a44c0a4a",
+              "name": "id_trang",
+              "value": "={{ $json.id }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {
+          "ignoreConversionErrors": true
+        }
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -192,
+        368
+      ],
+      "id": "92eb4336-0eea-45ef-9515-3ce441576ffa",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "resource": "audit",
+        "operation": "generate",
+        "additionalOptions": {},
+        "requestOptions": {}
+      },
+      "type": "n8n-nodes-base.n8n",
+      "typeVersion": 1,
+      "position": [
+        608,
+        496
+      ],
+      "id": "3a311966-279d-4381-a827-30132f5b16b1",
+      "name": "Generate a security audit1",
+      "credentials": {
+        "n8nApi": {
+          "id": "c9su88mMTIioDTTu",
+          "name": "n8n account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "https://graph.facebook.com/v24.0/me/accounts",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "access_token",
+              "value": "={{ $json.body.access_token }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -624,
+        752
+      ],
+      "id": "36dbad7b-46ed-417a-84cd-dbf6c6769d9e",
+      "name": "HTTP Request2"
+    },
+    {
+      "parameters": {
+        "content": "lấy API user dài hạn",
+        "height": 256,
+        "width": 208
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -896,
+        656
+      ],
+      "id": "bee46d36-434f-41cb-82ca-cda9954d2bb2",
+      "name": "Sticky Note6"
+    },
+    {
+      "parameters": {
+        "content": "lấy API các group dài hạn dựa trên APi User",
+        "height": 256,
+        "width": 208
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -672,
+        656
+      ],
+      "id": "bf10d7cb-aba5-4e6a-9356-60f0187f7cc0",
+      "name": "Sticky Note7"
+    },
+    {
+      "parameters": {
+        "url": "https://graph.facebook.com/v24.0/oauth/access_token",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "      grant_type",
+              "value": "fb_exchange_token"
+            },
+            {
+              "name": "              client_id",
+              "value": "YOUR_FACEBOOK_APP_ID"
+            },
+            {
+              "name": "    client_secret",
+              "value": "YOUR_FACEBOOK_APP_SECRET"
+            },
+            {
+              "name": "    fb_exchange_token",
+              "value": "YOUR_FB_EXCHANGE_TOKEN"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": true
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -848,
+        752
+      ],
+      "id": "0e587169-a41d-4e14-9645-d374da98d427",
+      "name": "HTTP Request - get user access token1"
+    },
+    {
+      "parameters": {
+        "path": "2d384f92-0d83-498c-b480-e05a68fba701",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -928,
+        928
+      ],
+      "id": "fc31d4b7-9203-4ead-a23a-3706293f3ee4",
+      "name": "Webhook",
+      "webhookId": "2d384f92-0d83-498c-b480-e05a68fba701"
+    },
+    {
+      "parameters": {
+        "respondWith": "text",
+        "responseBody": "={{ $json.query['hub.challenge'] }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        -720,
+        928
+      ],
+      "id": "c573f039-4e5e-47a9-8a3d-5f02213b7303",
+      "name": "Respond to Webhook"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "HTTP Request1": {
+      "main": [
+        [
+          {
+            "node": "Split Out",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request - get user access token",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request - get user access token": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Delete a credential1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out1": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate a security audit": {
+      "main": [
+        [
+          {
+            "node": "Split Out1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Generate a security audit",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Create a credential",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "subscribed_apps",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request - get user access token1": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "8c5cbd7c-8107-4f14-81f7-6a3766ddd36f",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "df75f6d19da9532b87ea5a84541b4ccc1d0dd5baf896242962b0dfcbc492bcf4"
+  },
+  "id": "WtVO4FVXhnfLMKm9",
+  "tags": []
+}

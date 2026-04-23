@@ -1,0 +1,1181 @@
+{
+  "name": "Facebook - Comment - SubFlow - Page Test",
+  "nodes": [
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://graph.facebook.com/{{ $('When Executed by Another Workflow').first().json.body.entry[0].changes[0].value.comment_id }}/comments",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "facebookGraphApi",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "message",
+              "value": "=@[{{ $('When Executed by Another Workflow').first().json.body.entry[0].changes[0].value.from.id }}] {{ $('Ai').item.json.output }}"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": true
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1760,
+        288
+      ],
+      "id": "748e28ed-a14e-41e5-9a57-1198977f6cca",
+      "name": "HTTP Request",
+      "credentials": {
+        "facebookGraphApi": {
+          "id": "YpVj1KHphEUi2h2Q",
+          "name": "Cẩm Nang Gối Lò Credential"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $json.session_id }}",
+        "contextWindowLength": "={{ 10}}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryPostgresChat",
+      "typeVersion": 1.3,
+      "position": [
+        1216,
+        512
+      ],
+      "id": "e8573b34-d4d4-414f-a521-810698d9bf5e",
+      "name": "Postgres Chat Memory",
+      "credentials": {
+        "postgres": {
+          "id": "yTb0PmyJdLcGFgel",
+          "name": "Postgres Chat Memory - Comment"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "bf7c19b4-43a6-4eac-bc15-016bfdb4f50f",
+              "name": "session_id",
+              "value": "={{ $('When Executed by Another Workflow').first().json.body.entry[0].changes[0].value.comment_id }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        512,
+        96
+      ],
+      "id": "dd2bfbf3-3edf-4d10-b3a6-8fb7ab7f4886",
+      "name": "Edit Fields1"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "bf7c19b4-43a6-4eac-bc15-016bfdb4f50f",
+              "name": "session_id",
+              "value": "={{ $('When Executed by Another Workflow').first().json.body.entry[0].changes[0].value.parent_id }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        512,
+        240
+      ],
+      "id": "744668d1-126a-42d1-acb3-281322a36115",
+      "name": "Edit Fields2"
+    },
+    {
+      "parameters": {
+        "inputSource": "passthrough"
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -1040,
+        0
+      ],
+      "id": "24aeb5d9-6ba2-4038-ab58-7594fc6603d2",
+      "name": "When Executed by Another Workflow",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "772bc07f-1ea1-4c1c-831c-a51d918e8e2a",
+              "leftValue": "={{ $('When Executed by Another Workflow').first().json.body.entry[0].changes[0].value.parent_id }}",
+              "rightValue": "={{ $('When Executed by Another Workflow').first().json.body.entry[0].changes[0].value.post_id }}",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        288,
+        112
+      ],
+      "id": "eea18aa9-05b0-4c8a-a707-7c60960531a6",
+      "name": "If1"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4.1-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        1088,
+        512
+      ],
+      "id": "14c289e9-2846-4c5f-9898-3cdad2f31273",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "FIqIFe3KqH66qyc5",
+          "name": "OpenAi account - Erubik"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $('When Executed by Another Workflow').first().json.body.entry[0].changes[0].value.message }}",
+        "options": {
+          "systemMessage": "=# SYSTEM PROMPT: TRỢ LÝ CẨM NANG GỐI LÒ (CNGL)\n\n## I. VAI TRÒ & PHONG CÁCH\n- **Vai trò:** Trợ lý ảo của tiệm bánh \"Cẩm Nang Gối Lò\" (CNGL).\n- **Tính cách:** Ấm áp, ngắn gọn, trân trọng từng tương tác.\n- **Độ dài phản hồi:** Tối đa 30 từ.\n- **Cách xưng hô **: Gọi người dùng là bạn.\n\n## II. QUY TẮC BẤT DI BẤT DỊCH (HARD CONSTRAINTS)\n1. **Cấm đặt câu hỏi:** Tuyệt đối KHÔNG sử dụng dấu chấm hỏi (?) hoặc câu nghi vấn.\n2. **Cấu trúc bắt buộc:** Mọi câu trả lời PHẢI bắt đầu bằng cụm từ: \"CNGL cảm ơn\".\n3. **Mục tiêu duy nhất:** Điều hướng khách hàng bấm Theo dõi/Like Fanpage.\n\n## III. KỊCH BẢN PHẢN HỒI\n\n### 1. Khách hàng Cảm ơn hoặc Khen ngợi\n- **Nội dung:** Cảm ơn tình cảm của khách và mời theo dõi Page để xem thêm nhiều bài hay.\n\n### 2. Khách hàng chỉ nhắn Dấu câu (., ?, !) hoặc Icon\n- **Nội dung:** Cảm ơn vì đã tương tác (dù chỉ là dấu chấm) và mời theo dõi Page.\n\n## IV. HƯỚNG DẪN THỰC THI\nDù input là lời khen hay chỉ là dấu chấm, output luôn tuân thủ công thức:\n**\"CNGL cảm ơn\" + [Lời chúc ấm áp] + [Mời Like/Follow Page]**"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3,
+      "position": [
+        1216,
+        288
+      ],
+      "id": "4926d0fd-8ece-429a-86c5-61a0c23ebf21",
+      "name": "Ai"
+    },
+    {
+      "parameters": {
+        "content": "## Lọc tín hiệu để đưa ra session id cho phù hợp \nNếu là comment gốc(cha) thì chạy luồng true -> session_id: comment_id\nNếu là comment con thì chạy luồng flase -> session_id : parent_id",
+        "height": 448,
+        "width": 352,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        384,
+        -80
+      ],
+      "id": "3f4e2d3b-91ca-44cc-936f-b3f1a4c3e0b0",
+      "name": "Sticky Note8"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://graph.facebook.com/v24.0/{{ $('When Executed by Another Workflow').item.json.body.entry[0].id }}/messages",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "facebookGraphApi",
+        "sendQuery": true,
+        "specifyQuery": "json",
+        "jsonQuery": "={\n    \"recipient\": {\n        \"comment_id\": \"{{ $('When Executed by Another Workflow').item.json.body.entry[0].changes[0].value.comment_id }}\"\n    },\n    \"message\": {\n      \"attachment\":{\n        \"type\":\"template\",\n        \"payload\":{\n          \"template_type\":\"button\",\n          \"text\":\"{{ $json.output[0].content[0].text }}\",\n          \"buttons\":[\n              {\n                  \"type\": \"postback\",\n                  \"title\": \"Tôi muốn nhận sách\",\n                  \"payload\": \"CNGL gửi link tải sách cho bạn {{ $('When Executed by Another Workflow').item.json.body.entry[0].changes[0].value.from.name }} ạ! {{ $('Switch').item.json['Link sách'] }}\"\n              }\n          ]\n        }\n      }\n    }\n}",
+        "options": {
+          "response": {
+            "response": {
+              "fullResponse": true
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        416,
+        -720
+      ],
+      "id": "4d6f8c61-092d-4281-a478-ac04c6fbe367",
+      "name": "HTTP Request3",
+      "retryOnFail": false,
+      "credentials": {
+        "facebookGraphApi": {
+          "id": "YpVj1KHphEUi2h2Q",
+          "name": "Cẩm Nang Gối Lò Credential"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "chatgpt-4o-latest",
+          "mode": "list",
+          "cachedResultName": "CHATGPT-4O-LATEST"
+        },
+        "responses": {
+          "values": [
+            {
+              "content": "=Chào hỏi khách hàng {{ $('When Executed by Another Workflow').item.json.body.entry[0].changes[0].value.from.name }}, cảm ơn khác hàng đã bình luận để nhận sách, Đưa ra cta để kêu gọi khác hàng tải sách.\nChỉ đưa ra CTA không để link tải sách hay gì cả.Không được có dấu \"\". Viết không xuống dòng."
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2,
+      "position": [
+        80,
+        -720
+      ],
+      "id": "68f3196d-dc30-4104-8e43-6acb84054f4b",
+      "name": "Message a model",
+      "credentials": {
+        "openAiApi": {
+          "id": "FIqIFe3KqH66qyc5",
+          "name": "OpenAi account - Erubik"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "879ef29a-441c-41c8-8421-4b2082d6093c",
+              "leftValue": "={{ $('Edit Fields').item.json.session_id }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "exists",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -208,
+        -704
+      ],
+      "id": "27d9ca25-75b7-4cae-ae91-19aff0c31d16",
+      "name": "If6",
+      "retryOnFail": false,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "a7d0cf7a-7d7f-427f-bc11-b864f406fe4c",
+                    "leftValue": "={{ $('Ebook').item.json.row_number }}",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "number",
+                      "operation": "exists",
+                      "singleValue": true
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Post ebook"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "541e68dd-b9b4-4908-a493-5eeb00c24850",
+                    "leftValue": "={{ $('Ebook').item.json.row_number }}",
+                    "rightValue": "",
+                    "operator": {
+                      "type": "number",
+                      "operation": "notExists",
+                      "singleValue": true
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Post bình thường"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        64,
+        112
+      ],
+      "id": "f0405982-0f8c-4e8b-b873-7c9f7976810c",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "content": "## Kiểm tra trang nhắn -> không làm gì\n\n",
+        "height": 192,
+        "width": 256,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -688,
+        -16
+      ],
+      "id": "bb5abb1a-b5f9-4bce-a2a9-f3e2ede6b44f",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "## Lấy thông tin bài viết để tách 2 luồng bài viết\n\n\n",
+        "height": 192,
+        "width": 576,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -384,
+        48
+      ],
+      "id": "415b2211-6c2a-45c6-9b53-893d70ade48e",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        -384,
+        -80
+      ],
+      "id": "509a6a6b-a1e4-4273-9369-4aa569229474",
+      "name": "do nothing"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "9cdf68a2-d9fe-426a-9bbc-09ac051f0cf2",
+              "leftValue": "={{ $('When Executed by Another Workflow').first().json.body.entry[0].changes[0].value.from.id }}",
+              "rightValue": "={{ $json.body.entry[0].id }}",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -608,
+        16
+      ],
+      "id": "ae10fe4d-75ee-441f-963d-b4847f4c4fef",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1gVSCss5uZ-GN0ZO_ZiU950rTXy0tmEf6T5ASGHd5354",
+          "mode": "list",
+          "cachedResultName": "TỔNG HỢP BÀI VIẾT TRÊN FANPAGE",
+          "cachedResultUrl": "YOUR_GOOGLE_SHEET_URL"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1078310587,
+          "mode": "list",
+          "cachedResultName": "Ebook",
+          "cachedResultUrl": "YOUR_GOOGLE_SHEET_URL"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "ID",
+              "lookupValue": "={{ $('When Executed by Another Workflow').item.json.body.entry[0].changes[0].value.post_id }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -160,
+        112
+      ],
+      "id": "02807959-54d4-4a77-beba-16ce3d96ea6b",
+      "name": "Ebook",
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "T4BIlZq3O0X4Tg2N",
+          "name": "Lamtuyen account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "content": "## EBOOK\n\n",
+        "height": 736,
+        "width": 1408,
+        "color": 7
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -800,
+        -880
+      ],
+      "id": "ef273e5c-d8b7-46ef-bf86-b922eab5b872",
+      "name": "Sticky Note10"
+    },
+    {
+      "parameters": {
+        "content": "## Post bình thường\n\n\n",
+        "height": 736,
+        "width": 1440,
+        "color": 7
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        768,
+        -64
+      ],
+      "id": "ce2d1ea9-84e2-40ef-ab57-6d2fc39cd158",
+      "name": "Sticky Note11"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://open.larksuite.com/open-apis/bot/v2/hook/4d2e52d1-b24b-42cc-87a7-f21874a5502e",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"msg_type\": \"interactive\",\n  \"card\": {\n    \"config\": {\n      \"wide_screen_mode\": true\n    },\n    \"header\": {\n      \"title\": {\n        \"tag\": \"plain_text\",\n        \"content\": \"[Bình luận] Có bình luận từ {{ $('When Executed by Another Workflow').item.json.body.entry[0].changes[0].value.from.name }}\"\n      },\n      \"template\": \"blue\"\n    },\n    \"elements\": [\n      {\n        \"tag\": \"div\",\n        \"text\": {\n          \"tag\": \"lark_md\",\n          \"content\": \"**Nội dung bình luận**: {{ $('When Executed by Another Workflow').item.json.body.entry[0].changes[0].value.message }}\"\n        }\n      },\n      {\n        \"tag\": \"action\",\n        \"actions\": [\n          {\n            \"tag\": \"button\",\n            \"text\": {\n              \"tag\": \"plain_text\",\n              \"content\": \"Kiểm tra bình luận\"\n            },\n            \"type\": \"url\",\n            \"url\": \"https://www.facebook.com/camnanggoilo/posts/{{ $('When Executed by Another Workflow').item.json.body.entry[0].changes[0].value.post_id }}/{{ $('When Executed by Another Workflow').item.json.body.entry[0].changes[0].value.comment_id }}\"\n          }\n        ]\n      }\n    ]\n  }\n}\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        2064,
+        112
+      ],
+      "id": "9068ae06-96ae-4c43-a1ba-5da6a45b98a6",
+      "name": "Comment - lark"
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $json.session_id }}",
+        "contextWindowLength": "={{ 10}}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryPostgresChat",
+      "typeVersion": 1.3,
+      "position": [
+        -608,
+        -480
+      ],
+      "id": "c315e90d-8f2f-4336-97b2-30dc335679d0",
+      "name": "Postgres Chat Memory1",
+      "credentials": {
+        "postgres": {
+          "id": "yTb0PmyJdLcGFgel",
+          "name": "Postgres Chat Memory - Comment"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4.1-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        -736,
+        -480
+      ],
+      "id": "4b36cbbf-1346-4a1a-aa9f-64a42f327519",
+      "name": "OpenAI Chat Model2",
+      "credentials": {
+        "openAiApi": {
+          "id": "FIqIFe3KqH66qyc5",
+          "name": "OpenAi account - Erubik"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $('When Executed by Another Workflow').first().json.body.entry[0].changes[0].value.message }}",
+        "options": {
+          "systemMessage": "=I. QUY TRÌNH TRA CỨU DỮ LIỆU BẮT BUỘC (MANDATORY WORKFLOW)\n⚠️ QUAN TRỌNG: Bạn KHÔNG ĐƯỢC PHÉP trả lời ngay lập tức. Bạn BẮT BUỘC phải thực hiện tuần tự các bước sau:\n\nBƯỚC 1: Kích hoạt tool_google_sheet\n\nMục đích: Xác định ngữ cảnh bài viết (Bài viết này có đang tặng sách/tài liệu không?).\n\nBƯỚC 2: Kích hoạt tool_supabase\n\nMục đích: Kiểm tra kho dữ liệu kiến thức bổ trợ (nếu cần giải thích thêm về nội dung sách).\n\nBƯỚC 3: Tổng hợp & Trả lời\n\nKết hợp dữ liệu từ Tool + Quy tắc ứng xử để tạo câu trả lời.\n\nII. MỤC TIÊU & VAI TRÒ\n🎯 Mục Tiêu\nPhản hồi chính xác dựa trên dữ liệu, giao tiếp ấm áp, lịch sự và biết ơn khách hàng.\n\n⭐ Vai Trò & Phong Cách\nVai trò: Trợ lý Bếp Bánh Thân Thiện / Cẩm Nang Gối Lò (CNGL).\n\nPhong cách: Ấm áp, ngắn gọn, chân thành.\n\nĐộ dài: Tối đa 20 - 30 từ.\n\nIII. BỘ QUY TẮC BẤT DI BẤT DỊCH (NGHIÊM CẤM VI PHẠM)\nTUYỆT ĐỐI KHÔNG đặt câu hỏi. (Không dùng dấu \"?\", không nghi vấn).\n\nTUYỆT ĐỐI KHÔNG dùng Icon/Emoji.\n\nBẮT BUỘC: Câu trả lời phải dựa trên thông tin từ Tool (về mặt nội dung) và tuân thủ quy tắc ứng xử (về mặt cảm xúc).\n\nIV. KỊCH BẢN PHẢN HỒI (SAU KHI ĐÃ CHẠY TOOL)\n1. Trường Hợp Khách Hàng Cảm Ơn\nQuy tắc: BẮT BUỘC đáp lại bằng \"CNGL cảm ơn\" + Một lời chúc tốt đẹp/ấm áp + Một CTA kêu gọi ủng hộ CNGL bằng cách like hoặc theo dõi fanpage (với lời mời gọi vui vẻ, có thể thêm icon)\n\n2. Trường Hợp Khách Hỏi Kỹ Thuật/Lỗi Bánh\nDữ liệu từ Tool: Supabase trả về nguyên nhân kỹ thuật.\n\n\n3. Trường Hợp Khách Khen Ngợi\nQuy tắc: BẮT BUỘC đáp lại bằng \"CNGL cảm ơn\" + Một lời chúc tốt đẹp/ấm áp + Một CTA kêu gọi ủng hộ CNGL bằng cách like hoặc theo dõi fanpage (với lời mời gọi vui vẻ, có thể thêm icon)\n\n4. Trường Hợp Khách Chỉ Nhắn Dấu Câu (., ?, !, ...)\nQuy tắc: BẮT BUỘC đáp lại bằng \"CNGL cảm ơn bạn đã tương tác\" + Một lời nhắn sẽ hỗ trợ.\n\n5. Trường Hợp Không Tìm Thấy Dữ Liệu (Ở cả 2 Tool)\nPhản hồi: \"CNGL cảm ơn phản hồi của bạn nhưng CNGL chưa có thông tin này. Bạn hãy nhắn tin để CNGL hỗ trợ giải đáp ngay nhé.\"\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3,
+      "position": [
+        -608,
+        -704
+      ],
+      "id": "c686dec2-1c3c-45c5-a850-9ccf13a3729c",
+      "name": "Ai2"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1gVSCss5uZ-GN0ZO_ZiU950rTXy0tmEf6T5ASGHd5354",
+          "mode": "list",
+          "cachedResultName": "TỔNG HỢP BÀI VIẾT TRÊN FANPAGE",
+          "cachedResultUrl": "YOUR_GOOGLE_SHEET_URL"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Cẩm Nang Gối Lò",
+          "cachedResultUrl": "YOUR_GOOGLE_SHEET_URL"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "ID",
+              "lookupValue": "={{ $('When Executed by Another Workflow').item.json.body.entry[0].changes[0].value.post_id }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.7,
+      "position": [
+        -480,
+        -480
+      ],
+      "id": "ab718606-ff97-4a9d-b3a5-c9f86da32fcf",
+      "name": "Google Sheet2",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "T4BIlZq3O0X4Tg2N",
+          "name": "Lamtuyen account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "retrieve-as-tool",
+        "toolDescription": "={{ $('When Executed by Another Workflow').first().json.body.entry[0].changes[0].value.message }}",
+        "tableName": {
+          "__rl": true,
+          "value": "documents",
+          "mode": "list",
+          "cachedResultName": "documents"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStoreSupabase",
+      "typeVersion": 1.3,
+      "position": [
+        -352,
+        -480
+      ],
+      "id": "2fe638d5-56e3-4d37-8f00-06338e33a08d",
+      "name": "Supabase Vector Store",
+      "credentials": {
+        "supabaseApi": {
+          "id": "bUitWIoNQhLEyE2e",
+          "name": "oitmo - comment & post"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.embeddingsOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        -272,
+        -272
+      ],
+      "id": "40dc8328-3923-4ee1-8625-0c91aac46252",
+      "name": "Embeddings OpenAI2",
+      "credentials": {
+        "openAiApi": {
+          "id": "FIqIFe3KqH66qyc5",
+          "name": "OpenAi account - Erubik"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "inputText": "={{ $('When Executed by Another Workflow').first().json.body.entry[0].changes[0].value.message }}",
+        "options": {
+          "categories": "technical_question, recipe_request, other",
+          "systemPromptTemplate": "=Bạn là một AI chuyên phân loại ý định khách hàng cho fanpage \"Cẩm Nang Gối Lò\" (CNGL). \nNhiệm vụ của bạn là đọc tin nhắn của khách hàng và phân loại vào MỘT trong 3 nhóm dưới đây.\n\nCHỈ TRẢ VỀ TÊN NHÃN (LABEL), KHÔNG GIẢI THÍCH GÌ THÊM.\n\nDANH SÁCH NHÃN VÀ ĐỊNH NGHĨA:\n\n1. [technical_question]\n   - Định nghĩa: Khách hàng gặp vấn đề, thắc mắc về kỹ thuật làm bánh, hỏi nguyên nhân lỗi bánh, hoặc hỏi kiến thức chuyên môn.\n   - Ví dụ: \"Tại sao bánh bị xẹp?\", \"Nướng bao nhiêu phút?\", \"Lò nhà mình bị chênh nhiệt thì sao?\", \"Bột này mua ở đâu?\".\n\n2. [recipe_request]\n   - Định nghĩa: Khách hàng muốn xin công thức, xin sách, tài liệu, hoặc hướng dẫn cách làm cụ thể một món nào đó.\n   - Ví dụ: \"Cho mình xin công thức bánh này\", \"Gửi mình ebook nhé\", \"Có công thức bánh bông lan không?\", \"Shop ơi check inbox gửi sách nha\".\n\n3. [other]\n   - Định nghĩa: Các trường hợp còn lại như: Lời khen, câu cảm thán, chào hỏi xã giao, hoặc các tin nhắn vô nghĩa (icon, dấu chấm).\n   - Ví dụ: \"CNGL có mấy video làm bánh đẹp ghê\", \"Cảm ơn shop\", \"Hello\", \"Ad ơi\", \".\", \"Dạ\".\n\nHÃY PHÂN TÍCH KỸ:\n- Nếu khách khen (VD: \"Bánh đẹp quá\") -> Chọn [other].\n- Nếu khách hỏi lỗi (VD: \"Sao bánh mình làm không đẹp như video?\") -> Chọn [technical_question].\n- Nếu khách đòi link/tài liệu (VD: \"Gửi mình hướng dẫn nhé\") -> Chọn [recipe_request].\n- Nếu khách khen công thức (VD: \"CNGL có mấy công thức làm bánh hay ghê\") -> Chọn [other].",
+          "includeDetailedResults": true
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.sentimentAnalysis",
+      "typeVersion": 1.1,
+      "position": [
+        816,
+        112
+      ],
+      "id": "dd5d318c-4103-4848-9562-410462e2dd57",
+      "name": "Sentiment Analysis"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4.1-mini"
+        },
+        "responsesApiEnabled": false,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        816,
+        320
+      ],
+      "id": "8bd9b5ce-202e-4dbd-9c45-427af90e7995",
+      "name": "OpenAI Chat Model1",
+      "credentials": {
+        "openAiApi": {
+          "id": "FIqIFe3KqH66qyc5",
+          "name": "OpenAi account - Erubik"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://graph.facebook.com/v24.0/{{ $('When Executed by Another Workflow').item.json.body.entry[0].changes[0].value.comment_id }}/likes",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "facebookGraphApi",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        1568,
+        288
+      ],
+      "id": "6445c897-1888-487a-9c9a-07a52b9e134f",
+      "name": "HTTP Request1",
+      "credentials": {
+        "facebookGraphApi": {
+          "id": "YpVj1KHphEUi2h2Q",
+          "name": "Cẩm Nang Gối Lò Credential"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## Phân tích ngữ cảnh",
+        "height": 448,
+        "width": 352,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        768,
+        32
+      ],
+      "id": "13ef8c5a-2dff-4b1a-b156-8ae54a834191",
+      "name": "Sticky Note9"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "d1881344-c913-4ec8-89c9-b3710989aeb7",
+              "leftValue": "={{ $json.body.entry[0].changes[0].value.verb }}",
+              "rightValue": "remove",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -880,
+        0
+      ],
+      "id": "2f2056e4-8670-4318-a994-993047ecde11",
+      "name": "If2"
+    }
+  ],
+  "pinData": {
+    "When Executed by Another Workflow": [
+      {
+        "json": {
+          "headers": {
+            "host": "n8n.otimo.vn",
+            "x-real-ip": "31.13.115.116",
+            "x-forwarded-for": "31.13.115.116",
+            "x-forwarded-proto": "https",
+            "connection": "Upgrade",
+            "content-length": "760",
+            "x-hub-signature": "sha1=db550885a175bbfaffe7ab7ad0572736d0a566b4",
+            "x-hub-signature-256": "sha256=74f471cf99a60408795f1a71e4d253df73f176d7045c6a524c7b2f056b620a92",
+            "content-type": "application/json",
+            "user-agent": "Webhooks/1.0 (https://fb.me/webhooks)",
+            "accept": "*/*"
+          },
+          "params": {},
+          "query": {},
+          "body": {
+            "entry": [
+              {
+                "id": "944226338957996",
+                "time": 1767790316,
+                "changes": [
+                  {
+                    "value": {
+                      "from": {
+                        "id": "25553106897654943",
+                        "name": "Thanh Nguyễn"
+                      },
+                      "post": {
+                        "status_type": "added_photos",
+                        "is_published": true,
+                        "updated_time": "2026-01-07T12:51:51+0000",
+                        "permalink_url": "https://www.facebook.com/865629095814112/posts/pfbid01He7EpNRR6DAKLvGWnXw31QxWa6mwMBrDuL87PtjgU4zieNxyBi45VSvaDb43SbYl",
+                        "promotion_status": "inactive",
+                        "id": "944226338957996_901328502244171"
+                      },
+                      "message": "Kiến thức quan trọng",
+                      "post_id": "944226338957996_901328502244171",
+                      "comment_id": "901328502244171_1421649809578681",
+                      "created_time": 1767790311,
+                      "item": "comment",
+                      "parent_id": "944226338957996_901328502244171",
+                      "verb": "add"
+                    },
+                    "field": "feed"
+                  }
+                ]
+              }
+            ],
+            "object": "page"
+          },
+          "webhookUrl": "https://n8n.otimo.vn/webhook/camnanggoilo-fanpage",
+          "executionMode": "production"
+        },
+        "pairedItem": {
+          "item": 0
+        }
+      }
+    ]
+  },
+  "connections": {
+    "Postgres Chat Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "Ai",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "Sentiment Analysis",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields2": {
+      "main": [
+        [
+          {
+            "node": "Sentiment Analysis",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "If2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        []
+      ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Edit Fields2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Ai",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ai": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message a model": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If6": {
+      "main": [
+        [
+          {
+            "node": "Message a model",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [],
+        [
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "do nothing",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Ebook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ebook": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Postgres Chat Memory1": {
+      "ai_memory": [
+        [
+          {
+            "node": "Ai2",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model2": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Ai2",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheet2": {
+      "ai_tool": [
+        [
+          {
+            "node": "Ai2",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Supabase Vector Store": {
+      "ai_tool": [
+        [
+          {
+            "node": "Ai2",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings OpenAI2": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Supabase Vector Store",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ai2": {
+      "main": [
+        [
+          {
+            "node": "If6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Sentiment Analysis": {
+      "main": [
+        [
+          {
+            "node": "Comment - lark",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Comment - lark",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Ai",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Sentiment Analysis",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request1": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If2": {
+      "main": [
+        [],
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "b9b6c070-4a61-40d5-8156-8516eb28f78a",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "df75f6d19da9532b87ea5a84541b4ccc1d0dd5baf896242962b0dfcbc492bcf4"
+  },
+  "id": "3YiF4b4GPq82MlWp",
+  "tags": []
+}
