@@ -25,11 +25,10 @@ N8N_Facebook/
 **File:** `Facebook - Main Flow Webhook.json`
 
 Webhook chính xử lý sự kiện từ Facebook Page. Phân loại:
-- `edited` - Bài viết được chỉnh sửa
-- `added` - Bài viết mới
+- `added` - Lưu bài viết mới
 - `messenger` - Tin nhắn messenger
 - `comment` - Comment trên bài viết
-<img width="697" height="382" alt="Screenshot 2026-04-23 at 13 51 42" src="https://github.com/user-attachments/assets/32058eed-3c8c-4f32-bd3a-b8f2368e194e" />
+<img width="711" height="475" alt="Screenshot 2026-04-23 at 14 04 48" src="https://github.com/user-attachments/assets/4e5183db-29cd-465c-91d6-8d8920ba511b" />
 
 ### 2. Messenger - Luồng đầy đủ webhook gọi vào - Page Test
 **File:** `Facebook - Messenger - Luồng đầy đủ webhook gọi vào - Page Test.json`
