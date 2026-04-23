@@ -28,7 +28,6 @@ Webhook chính xử lý sự kiện từ Facebook Page. Phân loại:
 - `added` - Lưu bài viết mới
 - `messenger` - Tin nhắn messenger
 - `comment` - Comment trên bài viết
-<img width="711" height="475" alt="Screenshot 2026-04-23 at 14 04 48" src="https://github.com/user-attachments/assets/4e5183db-29cd-465c-91d6-8d8920ba511b" />
 
 ### 2. Messenger - Luồng đầy đủ webhook gọi vào - Page Test
 **File:** `Facebook - Messenger - Luồng đầy đủ webhook gọi vào - Page Test.json`
@@ -37,7 +36,6 @@ Luồng hoàn chỉnh xử lý tin nhắn Messenger:
 - Nhận webhook từ Facebook
 - Lưu vào Supabase database (`messenger_api`)
 - Xử lý tự động với AI
-<img width="851" height="311" alt="Screenshot 2026-04-23 at 13 53 34" src="https://github.com/user-attachments/assets/6a55e72a-e865-4603-9680-57ad47cbfe95" />
 
 ### 3. Messenger - SubFlow - Người Thật & AI - Page Test
 **File:** `Facebook - Messenger - SubFlow - Người Thật & AI - Page Test.json`
@@ -46,7 +44,6 @@ SubFlow xử lý hội thoại giữa người thật và AI:
 - Quản lý conversation với Redis
 - Memory PostgreSQL cho LangChain
 - Phân loại tin nhắn (người thật / bot)
-<img width="796" height="322" alt="Screenshot 2026-04-23 at 13 56 49" src="https://github.com/user-attachments/assets/395f6b12-9d1f-45f4-bf59-41142af7af50" />
 
 ### 4. Comment - SubFlow - Page Test
 **File:** `Facebook - Comment - SubFlow - Page Test.json`
@@ -55,7 +52,6 @@ SubFlow xử lý comment trên bài viết:
 - Nhận comment từ webhook
 - Gọi AI để tạo phản hồi
 - Reply comment qua Facebook Graph API
-<img width="1015" height="538" alt="Screenshot 2026-04-23 at 13 49 06" src="https://github.com/user-attachments/assets/67df5def-82b2-4bf3-b824-976a1c1c0424" />
 
 ### 5. Post - Lấy thông tin bài viết - Page Test
 **File:** `Facebook - Post -  Lấy thông tin bài viết - Page Test.json`
@@ -71,7 +67,6 @@ Lấy thông tin bài viết từ Facebook Page:
 Tự động lưu bài viết vào Supabase Vector Store:
 - Lưu vào bảng `documents`
 - Hỗ trợ semantic search với embedding
-<img width="470" height="221" alt="Screenshot 2026-04-23 at 13 59 18" src="https://github.com/user-attachments/assets/ff76f277-3f01-42da-85f0-6268ffc5714f" />
 
 
 ### 7. Post - Reaction - SubFlow - Page Test
@@ -86,7 +81,6 @@ SubFlow xử lý reaction/post engagement:
 **File:** `Facebook - Lấy link hình ảnh.json`
 
 Trích xuất URL hình ảnh từ bài viết Facebook.
-<img width="294" height="117" alt="Screenshot 2026-04-23 at 13 53 26" src="https://github.com/user-attachments/assets/15572c75-fc1f-4960-80f2-a257198147df" />
 
 ### 9. Tự Động Lấy PageAccessToken - Page Test
 **File:** `Facebook - Tự Động Lấy PageAccessToken - Page Test.json`
