@@ -1,122 +1,120 @@
 # N8N Facebook Automation Workflows
 
-Bộ sưu tập các workflow n8n tự động hóa Facebook.
+A collection of n8n workflows for Facebook Page automation.
 
-## Cấu Trúc
+## Structure
 
 ```
 N8N_Facebook/
 ├── README.md
 ├── Facebook - Main Flow Webhook.json
-├── Facebook - Messenger - Luồng đầy đủ webhook gọi vào - Page Test.json
-├── Facebook - Messenger - SubFlow - Người Thật & AI - Page Test.json
+├── Facebook - Messenger - Full Webhook Incoming Flow - Page Test.json
+├── Facebook - Messenger - SubFlow - Human & AI - Page Test.json
 ├── Facebook - Comment - SubFlow - Page Test.json
-├── Facebook - Post -  Lấy thông tin bài viết - Page Test.json
-├── Facebook - Post  - Tự Động Lưu Bài Viết - Page Test.json
+├── Facebook - Post - Get Post Info - Page Test.json
+├── Facebook - Post - Auto Save Posts - Page Test.json
 ├── Facebook - Post - Reaction - SubFlow - Page Test.json
-├── Facebook - Lấy link hình ảnh.json
-├── Facebook - Tự Động Lấy PageAccessToken - Page Test.json
-└── Facebook - LarkSuite - Cập Nhật Bảng Sau Khi Nhân Viên Đã Trả Lời Xong Với Khách Hàng.json
+├── Facebook - Extract Image Links.json
+├── Facebook - Auto Get PageAccessToken - Page Test.json
+└── Facebook - LarkSuite - Update Table After Agent Responded.json
 ```
 
-## Danh Sách Workflows
+## Workflows
 
-### 1. Main Flow Webhook 
+### 1. Main Flow Webhook
 **File:** `Facebook - Main Flow Webhook.json`
 
-Webhook chính xử lý sự kiện từ Facebook Page. Phân loại:
-- `added` - Lưu bài viết mới
-- `messenger` - Tin nhắn messenger
-- `comment` - Comment trên bài viết
+Main webhook handler for Facebook Page events. Classifies:
+- `edited` - Post edited
+- `added` - New post
+- `messenger` - Messenger message
+- `comment` - Comment on post
 
-### 2. Messenger - Luồng đầy đủ webhook gọi vào - Page Test
-**File:** `Facebook - Messenger - Luồng đầy đủ webhook gọi vào - Page Test.json`
+### 2. Messenger - Full Webhook Incoming Flow - Page Test
+**File:** `Facebook - Messenger - Full Webhook Incoming Flow - Page Test.json`
 
-Luồng hoàn chỉnh xử lý tin nhắn Messenger:
-- Nhận webhook từ Facebook
-- Lưu vào Supabase database (`messenger_api`)
-- Xử lý tự động với AI
+Complete flow for processing Messenger messages:
+- Receive webhook from Facebook
+- Save to Supabase database (`messenger_api`)
+- Process with AI automation
 
-### 3. Messenger - SubFlow - Người Thật & AI - Page Test
-**File:** `Facebook - Messenger - SubFlow - Người Thật & AI - Page Test.json`
+### 3. Messenger - SubFlow - Human & AI - Page Test
+**File:** `Facebook - Messenger - SubFlow - Human & AI - Page Test.json`
 
-SubFlow xử lý hội thoại giữa người thật và AI:
-- Quản lý conversation với Redis
-- Memory PostgreSQL cho LangChain
-- Phân loại tin nhắn (người thật / bot)
+SubFlow handling human/AI conversations:
+- Conversation management with Redis
+- PostgreSQL memory for LangChain
+- Message classification (human / bot)
 
 ### 4. Comment - SubFlow - Page Test
 **File:** `Facebook - Comment - SubFlow - Page Test.json`
 
-SubFlow xử lý comment trên bài viết:
-- Nhận comment từ webhook
-- Gọi AI để tạo phản hồi
-- Reply comment qua Facebook Graph API
+SubFlow for processing post comments:
+- Receive comment from webhook
+- Call AI to generate response
+- Reply to comment via Facebook Graph API
 
+### 5. Post - Get Post Info - Page Test
+**File:** `Facebook - Post - Get Post Info - Page Test.json`
 
-### 5. Post - Lấy thông tin bài viết - Page Test
-**File:** `Facebook - Post -  Lấy thông tin bài viết - Page Test.json`
-
-Lấy thông tin bài viết từ Facebook Page:
-- Sử dụng Facebook Graph API
+Fetch post information from Facebook Page:
+- Uses Facebook Graph API
 - Fields: `id, message, created_time, permalink_url`
 
+### 6. Post - Auto Save Posts - Page Test
+**File:** `Facebook - Post - Auto Save Posts - Page Test.json`
 
-### 6. Post - Tự Động Lưu Bài Viết - Page Test
-**File:** `Facebook - Post  - Tự Động Lưu Bài Viết - Page Test.json`
-
-Tự động lưu bài viết vào Supabase Vector Store:
-- Lưu vào bảng `documents`
-- Hỗ trợ semantic search với embedding
+Auto-save posts to Supabase Vector Store:
+- Save to `documents` table
+- Supports semantic search with embedding
 
 
 ### 7. Post - Reaction - SubFlow - Page Test
 **File:** `Facebook - Post - Reaction - SubFlow - Page Test.json`
 
-SubFlow xử lý reaction/post engagement:
-- Gửi tin nhắn tự động khi có tương tác
-- Redirect sang group Zalo: https://zalo.me/g/ujerqq444
+SubFlow for reaction/post engagement:
+- Auto-send message on interaction
+- Redirect to Zalo group: https://zalo.me/g/ujerqq444
 
+### 8. Extract Image Links
+**File:** `Facebook - Extract Image Links.json`
 
-### 8. Lấy link hình ảnh
-**File:** `Facebook - Lấy link hình ảnh.json`
+Extract image URLs from Facebook posts.
 
-Trích xuất URL hình ảnh từ bài viết Facebook.
+### 9. Auto Get PageAccessToken - Page Test
+**File:** `Facebook - Auto Get PageAccessToken - Page Test.json`
 
-### 9. Tự Động Lấy PageAccessToken - Page Test
-**File:** `Facebook - Tự Động Lấy PageAccessToken - Page Test.json`
+Auto-fetch and update Page Access Token:
+- Call `me/accounts` API
+- Create new Facebook Graph API credential
 
-Tự động lấy và cập nhật Page Access Token:
-- Gọi `me/accounts` API
-- Tạo credential mới cho Facebook Graph API
+### 10. LarkSuite - Update Table After Agent Responded
+**File:** `Facebook - LarkSuite - Update Table After Agent Responded.json`
 
-### 10. LarkSuite - Cập Nhật Bảng Sau Khi Nhân Viên Đã Trả Lời Xong Với Khách Hàng
-**File:** `Facebook - LarkSuite - Cập Nhật Bảng Sau Khi Nhân Viên Đã Trả Lời Xong Với Khách Hàng.json`
-
-Cập nhật trạng thái trong Supabase sau khi nhân viên trả lời:
+Update status in Supabase after agent responds:
 - Filter: `status = "Pending"`
 - Update: `status = "Done"`
 
-## Công Nghệ Sử Dụng
+## Tech Stack
 
 - **N8N** - Workflow automation platform
-- **Facebook Graph API** - Kết nối Facebook Page
+- **Facebook Graph API** - Facebook Page integration
 - **Supabase** - Database & Vector Store
 - **Redis** - Message aggregation
 - **LangChain** - AI/LLM integration (PostgreSQL memory)
-- **LarkSuite** - Cập nhật bảng khi hoàn thành
+- **LarkSuite** - Table update on completion
 
-## Cách Import Workflow
+## How to Import Workflows
 
-1. Mở N8N dashboard
+1. Open N8N dashboard
 2. Click **Import from File**
-3. Chọn file `.json` cần import
-4. Cấu hình Credentials:
+3. Select the `.json` file to import
+4. Configure Credentials:
    - `facebookGraphApi` - Facebook credentials
    - `supabaseApi` - Supabase connection
 5. Activate workflow
 
-## Cấu Hình Credentials
+## Credentials Configuration
 
 ### Facebook Graph API
 ```json
