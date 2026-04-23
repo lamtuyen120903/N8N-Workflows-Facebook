@@ -75,7 +75,7 @@ Tự động lưu bài viết vào Supabase Vector Store:
 SubFlow xử lý reaction/post engagement:
 - Gửi tin nhắn tự động khi có tương tác
 - Redirect sang group Zalo: https://zalo.me/g/ujerqq444
-<img width="519" height="191" alt="Screenshot 2026-04-23 at 13 59 09" src="https://github.com/user-attachments/assets/4bdeed81-91dd-43b2-afd3-520f162dc953" />
+
 
 ### 8. Lấy link hình ảnh
 **File:** `Facebook - Lấy link hình ảnh.json`
