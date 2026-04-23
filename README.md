@@ -52,6 +52,8 @@ SubFlow xử lý comment trên bài viết:
 - Nhận comment từ webhook
 - Gọi AI để tạo phản hồi
 - Reply comment qua Facebook Graph API
+<img width="535" height="655" alt="Screenshot 2026-04-23 at 14 37 33" src="https://github.com/user-attachments/assets/4f81b60c-ec15-484a-a03c-e5567c878100" />
+
 
 ### 5. Post - Lấy thông tin bài viết - Page Test
 **File:** `Facebook - Post -  Lấy thông tin bài viết - Page Test.json`
