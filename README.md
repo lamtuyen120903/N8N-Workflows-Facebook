@@ -1,13 +1,13 @@
 # N8N Facebook Automation Workflows
 
-Bộ sưu tập các workflow n8n tự động hóa Facebook cho dự án OTIMO.
+Bộ sưu tập các workflow n8n tự động hóa Facebook.
 
 ## Cấu Trúc
 
 ```
 N8N_Facebook/
 ├── README.md
-├── Facebook - Main Flow Webhook - Cẩm nang gối lò.json
+├── Facebook - Main Flow Webhook.json
 ├── Facebook - Messenger - Luồng đầy đủ webhook gọi vào - Page Test.json
 ├── Facebook - Messenger - SubFlow - Người Thật & AI - Page Test.json
 ├── Facebook - Comment - SubFlow - Page Test.json
@@ -21,8 +21,8 @@ N8N_Facebook/
 
 ## Danh Sách Workflows
 
-### 1. Main Flow Webhook - Cẩm nang gối lò
-**File:** `Facebook - Main Flow Webhook - Cẩm nang gối lò.json`
+### 1. Main Flow Webhook 
+**File:** `Facebook - Main Flow Webhook.json`
 
 Webhook chính xử lý sự kiện từ Facebook Page. Phân loại:
 - `edited` - Bài viết được chỉnh sửa
@@ -60,7 +60,6 @@ SubFlow xử lý comment trên bài viết:
 Lấy thông tin bài viết từ Facebook Page:
 - Sử dụng Facebook Graph API
 - Fields: `id, message, created_time, permalink_url`
-- Credential: Cẩm Nang Gối Lò
 
 ### 6. Post - Tự Động Lưu Bài Viết - Page Test
 **File:** `Facebook - Post  - Tự Động Lưu Bài Viết - Page Test.json`
@@ -133,12 +132,6 @@ Cập nhật trạng thái trong Supabase sau khi nhân viên trả lời:
   "password": "YOUR_PASSWORD"
 }
 ```
-
-## Liên Hệ
-
-- **Project:** OTIMO
-- **Facebook Page:** Cẩm nang gối lò
-- **Page Test:** Page Test (testing environment)
 
 ## License
 
